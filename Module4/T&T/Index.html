@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>True or False</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Century Gothic','CenturyGothic','Trebuchet MS',Arial,sans-serif;
+    background: #ffffff;
+    color: #001489;
+    padding: 14px 20px 16px;
+  }
+
+  .intro { font-size: 12px; color: #001489; font-style: italic; margin-bottom: 14px; text-align: center; }
+
+  .q-block {
+    background: #fff;
+    border-radius: 10px;
+    border-left: 5px solid #007DBA;
+    padding: 13px 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 6px rgba(0,20,137,0.07);
+  }
+  .q-block.correct { border-color: #C4D600; background: #ffffff; }
+  .q-block.wrong   { border-color: #D73828; background: #ffffff; }
+
+  .q-text { font-size: 13px; font-weight: 600; color: #001489; line-height: 1.5; margin-bottom: 10px; }
+
+  .tf-row { display: flex; gap: 8px; }
+  .tf-btn {
+    flex: 1;
+    padding: 9px 0;
+    border: 2px solid #007DBA;
+    border-radius: 8px;
+    background: #ffffff;
+    font-family: 'Century Gothic','CenturyGothic','Trebuchet MS',Arial,sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #001489;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tf-btn:hover { border-color: #007DBA; }
+  .tf-btn.selected { background: #007DBA; border-color: #007DBA; color: #fff; }
+  .q-block.correct .tf-btn.selected { background: #C4D600; border-color: #C4D600; color: #001489; }
+  .q-block.wrong   .tf-btn.selected { background: #D73828; border-color: #D73828; color: #fff; }
+  .tf-btn:disabled { cursor: default; }
+  .tf-btn:disabled:not(.selected) { opacity: 0.4; }
+
+  .q-feedback {
+    font-size: 11px;
+    font-style: italic;
+    margin-top: 9px;
+    line-height: 1.45;
+    display: none;
+    padding-top: 8px;
+    border-top: 1px solid #C4D600;
+  }
+  .q-block.correct .q-feedback { display: block; color: #001489; }
+  .q-block.wrong   .q-feedback { display: block; color: #001489; }
+
+  .btn-row { display: flex; gap: 10px; margin-top: 14px; }
+  .btn {
+    flex: 1;
+    padding: 11px 16px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Century Gothic','CenturyGothic','Trebuchet MS',Arial,sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+  }
+  .btn-check { background: #001489; }
+  .btn-reset { background: #001489; }
+
+  .score-bar {
+    display: none;
+    background: #001489;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 14px;
+    text-align: center;
+    color: #fff;
+  }
+  .score-bar.visible { display: block; }
+  .score-num { font-size: 34px; font-weight: 800; color: #FFC600; display: block; line-height: 1; margin-bottom: 4px; }
+  .score-msg { font-size: 12px; font-style: italic; opacity: 0.85; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<p class="intro">Read each statement and tap <strong>True</strong> or <strong>False</strong>. Then press <strong>Check</strong>.</p>
+
+<div class="q-block" id="q1">
+  <div class="q-text">A candidate may be allowed extra time without a written letter of approval from the WCED.</div>
+  <div class="tf-row">
+    <button class="tf-btn" id="q1-T" onclick="select(1,'T')">True</button>
+    <button class="tf-btn" id="q1-F" onclick="select(1,'F')">False</button>
+  </div>
+  <div class="q-feedback" id="f1">Only candidates with written WCED approval may be allowed extra time.</div>
+</div>
+
+<div class="q-block" id="q2">
+  <div class="q-text">The approval letter placed inside the answer book must include the candidate's name.</div>
+  <div class="tf-row">
+    <button class="tf-btn" id="q2-T" onclick="select(2,'T')">True</button>
+    <button class="tf-btn" id="q2-F" onclick="select(2,'F')">False</button>
+  </div>
+  <div class="q-feedback" id="f2">The letter must not contain the candidate's name — only their examination number.</div>
+</div>
+
+<div class="q-block" id="q3">
+  <div class="q-text">When a computer is used, it must be stand-alone with no internet access and all supporting programs disabled.</div>
+  <div class="tf-row">
+    <button class="tf-btn" id="q3-T" onclick="select(3,'T')">True</button>
+    <button class="tf-btn" id="q3-F" onclick="select(3,'F')">False</button>
+  </div>
+  <div class="q-feedback" id="f3">All three conditions must be met before the examination begins.</div>
+</div>
+
+<div class="q-block" id="q4">
+  <div class="q-text">The scribe may also serve as the invigilator during the same examination session.</div>
+  <div class="tf-row">
+    <button class="tf-btn" id="q4-T" onclick="select(4,'T')">True</button>
+    <button class="tf-btn" id="q4-F" onclick="select(4,'F')">False</button>
+  </div>
+  <div class="q-feedback" id="f4">The scribe or reader must not serve as invigilator at the same time. An invigilator must be separately present.</div>
+</div>
+
+<div class="q-block" id="q5">
+  <div class="q-text">A recording must be made when a candidate writes in a separate venue with a scribe.</div>
+  <div class="tf-row">
+    <button class="tf-btn" id="q5-T" onclick="select(5,'T')">True</button>
+    <button class="tf-btn" id="q5-F" onclick="select(5,'F')">False</button>
+  </div>
+  <div class="q-feedback" id="f5">A continuous recording must be made and retained by the school in the safe or strong room.</div>
+</div>
+
+<div class="q-block" id="q6">
+  <div class="q-text">An emergency concession may be implemented by the invigilator without approval from the WCED.</div>
+  <div class="tf-row">
+    <button class="tf-btn" id="q6-T" onclick="select(6,'T')">True</button>
+    <button class="tf-btn" id="q6-F" onclick="select(6,'F')">False</button>
+  </div>
+  <div class="q-feedback" id="f6">Approval must be obtained through the Chief Invigilator, Assessment Coordinator and SLES unit at Head Office before implementation.</div>
+</div>
+
+<div class="q-block" id="q7">
+  <div class="q-text">A reader pen or computer may be used instead of a human reader, provided this is approved by the WCED.</div>
+  <div class="tf-row">
+    <button class="tf-btn" id="q7-T" onclick="select(7,'T')">True</button>
+    <button class="tf-btn" id="q7-F" onclick="select(7,'F')">False</button>
+  </div>
+  <div class="q-feedback" id="f7">This is permitted and does not necessarily require a separate venue.</div>
+</div>
+
+<div class="btn-row">
+  <button class="btn btn-check" onclick="checkAll()">✓ Check</button>
+  <button class="btn btn-reset" onclick="resetAll()">↩ Start over</button>
+</div>
+
+<div class="score-bar" id="score-bar">
+  <span class="score-num" id="score-num"></span>
+  out of 7
+  <div class="score-msg" id="score-msg"></div>
+</div>
+
+<script>
+const ANSWERS = { 1:'F', 2:'F', 3:'T', 4:'F', 5:'T', 6:'F', 7:'T' };
+const chosen  = {};
+const locked  = {};
+const checked = {};
+
+function updateScore() {
+  let score = 0;
+  for (let i = 1; i <= 7; i++) {
+    if (document.getElementById('q'+i).classList.contains('correct')) score++;
+  }
+  document.getElementById('score-num').textContent = score;
+  const msg = score === 7 ? 'Perfect — all correct!'
+            : score >= 5  ? 'Almost there — try correcting the red ones.'
+            :                'Keep going — tap the correct answer on the red ones.';
+  document.getElementById('score-msg').textContent = msg;
+}
+
+function select(n, val) {
+  if (locked[n]) return;
+  chosen[n] = val;
+  document.getElementById('q'+n+'-T').classList.toggle('selected', val==='T');
+  document.getElementById('q'+n+'-F').classList.toggle('selected', val==='F');
+
+  /* If this question has already been checked, update feedback immediately */
+  if (checked[n]) {
+    const block     = document.getElementById('q'+n);
+    const isCorrect = val === ANSWERS[n];
+    block.classList.remove('correct','wrong');
+    block.classList.add(isCorrect ? 'correct' : 'wrong');
+    if (isCorrect) {
+      locked[n] = true;
+      document.getElementById('q'+n+'-T').disabled = true;
+      document.getElementById('q'+n+'-F').disabled = true;
+    }
+    updateScore();
+  }
+}
+
+function checkAll() {
+  for (let i = 1; i <= 7; i++) {
+    if (!chosen[i]) continue;
+    checked[i] = true;
+    const block     = document.getElementById('q'+i);
+    const isCorrect = chosen[i] === ANSWERS[i];
+    block.classList.remove('correct','wrong');
+    block.classList.add(isCorrect ? 'correct' : 'wrong');
+    if (isCorrect) {
+      locked[i] = true;
+      document.getElementById('q'+i+'-T').disabled = true;
+      document.getElementById('q'+i+'-F').disabled = true;
+    }
+  }
+  updateScore();
+  document.getElementById('score-bar').classList.add('visible');
+}
+
+function resetAll() {
+  for (let i = 1; i <= 7; i++) {
+    delete chosen[i];
+    delete locked[i];
+    delete checked[i];
+    const block = document.getElementById('q'+i);
+    block.classList.remove('correct','wrong');
+    ['T','F'].forEach(v => {
+      const btn = document.getElementById('q'+i+'-'+v);
+      btn.classList.remove('selected');
+      btn.disabled = false;
+    });
+  }
+  document.getElementById('score-bar').classList.remove('visible');
+}
+</script>
+</body>
+</html>
