@@ -244,7 +244,7 @@ const checked = { s1: false, s2: false, s3: false, s4: false, s5: false };
 
 /* Live listener — fires whenever a dropdown changes after checking */
 for (let i = 1; i <= 5; i++) {
-  document.getElementById('s' + i).addEventListener('change', function() {
+  document.getElementById('s' + i).addEventListener('input', function() {
     const key   = 's' + i;
     if (!checked[key]) return; /* not yet checked, do nothing */
     const block = document.getElementById('q' + i);
