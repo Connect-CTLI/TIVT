@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Flip Cards – Option 1</title>
+<style>
+  body { font-family: 'Century Gothic','CenturyGothic','Trebuchet MS',Arial,sans-serif; background: #F2F4FB; padding: 20px; color: #001489; }
+
+  .fc-intro { font-size: 13px; color: #968C83; font-style: italic; margin-bottom: 20px; }
+
+  .fc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 28px; }
+
+  .fc-scene { height: 200px; perspective: 900px; cursor: pointer; }
+
+  .fc-card {
+    width: 100%; height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.55s cubic-bezier(.4,0,.2,1);
+  }
+  .fc-scene.flipped .fc-card { transform: rotateY(180deg); }
+
+  .fc-front, .fc-back {
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 12px;
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .fc-front {
+    background: #001489;
+    color: #fff;
+    border-bottom: 4px solid #007DBA;
+  }
+  .fc-back {
+    background: #fff;
+    color: #001489;
+    border-bottom: 4px solid #C4D600;
+    transform: rotateY(180deg);
+    border: 1px solid #A6BBC8;
+    border-bottom: 4px solid #C4D600;
+  }
+
+  .fc-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 10px;
+  }
+  .fc-front .fc-label { color: #FFC600; }
+  .fc-back  .fc-label { color: #007DBA; }
+
+  .fc-text {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+    flex: 1;
+  }
+  .fc-front .fc-text { color: #fff; }
+  .fc-back  .fc-text { color: #001489; }
+
+  .fc-hint {
+    font-size: 10px;
+    font-style: italic;
+    opacity: 0.5;
+    margin-top: 10px;
+    text-align: right;
+  }
+  .fc-front .fc-hint { color: #fff; }
+  .fc-back  .fc-hint { color: #001489; }
+
+  /* Barring section */
+  .bar-title { font-size: 14px; font-weight: 700; color: #001489; margin-bottom: 14px; }
+
+  .bar-case {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    border-left: 5px solid #ccc;
+  }
+  .bar-case.c0 { border-color: #C4D600; }
+  .bar-case.c1 { border-color: #007DBA; }
+  .bar-case.c3 { border-color: #D73828; }
+
+  .bar-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+
+  .bar-badge {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; padding: 4px 12px;
+    border-radius: 20px; white-space: nowrap;
+  }
+  .c0 .bar-badge { background: #C4D600; color: #001489; }
+  .c1 .bar-badge { background: #007DBA; color: #fff; }
+  .c3 .bar-badge { background: #D73828; color: #fff; }
+
+  .bar-exam { font-size: 12px; color: #968C83; font-style: italic; }
+
+  .bar-timeline { display: flex; align-items: flex-start; overflow-x: auto; padding-bottom: 4px; }
+
+  .bar-node { display: flex; flex-direction: column; align-items: center; min-width: 80px; }
+  .bar-dot { width: 14px; height: 14px; border-radius: 50%; margin-bottom: 6px; }
+  .bar-dot.guilty  { background: #D73828; }
+  .bar-dot.result  { background: #C4D600; }
+  .bar-dot.blocked { background: #968C83; }
+
+  .bar-node-label { font-size: 11px; font-weight: 700; color: #001489; text-align: center; line-height: 1.3; }
+  .bar-node-sub   { font-size: 10px; color: #968C83; text-align: center; margin-top: 2px; line-height: 1.3; }
+
+  .bar-line { flex: 1; height: 2px; min-width: 24px; margin-top: 6px; }
+  .bar-line.solid  { background: #A6BBC8; }
+  .bar-line.dashed { background: repeating-linear-gradient(90deg,#A6BBC8 0 6px,transparent 6px 12px); }
+
+  .bar-note {
+    font-size: 12px; color: #968C83; font-style: italic;
+    border-top: 1px solid #e0e0e0; padding-top: 8px; margin-top: 10px;
+  }
+
+  .bar-key { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+  .bar-key-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #968C83; }
+  .bar-key-dot { width: 10px; height: 10px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<p style="font-size:13px; color:#968C83; font-style:italic; margin-bottom:20px;">Tap each card to reveal the sanction.</p>
+
+<div class="fc-grid">
+
+  <div class="fc-scene" onclick="this.classList.toggle('flipped')">
+    <div class="fc-card">
+      <div class="fc-front">
+        <div>
+          <div class="fc-label">Irregularity</div>
+          <div class="fc-text">The late receipt of answer scripts or answer scripts not placed in the batch.</div>
+        </div>
+        <div class="fc-hint">Tap to reveal sanction →</div>
+      </div>
+      <div class="fc-back">
+        <div>
+          <div class="fc-label">Sanction / Resolution</div>
+          <div class="fc-text">Disciplinary action to be taken against the school's officials.</div>
+        </div>
+        <div class="fc-hint">Tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc-scene" onclick="this.classList.toggle('flipped')">
+    <div class="fc-card">
+      <div class="fc-front">
+        <div>
+          <div class="fc-label">Irregularity</div>
+          <div class="fc-text">The candidate writes the incorrect question paper.</div>
+        </div>
+        <div class="fc-hint">Tap to reveal sanction →</div>
+      </div>
+      <div class="fc-back">
+        <div>
+          <div class="fc-label">Sanction / Resolution</div>
+          <div class="fc-text">Disciplinary action to be taken against the school's officials.</div>
+        </div>
+        <div class="fc-hint">Tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc-scene" onclick="this.classList.toggle('flipped')">
+    <div class="fc-card">
+      <div class="fc-front">
+        <div>
+          <div class="fc-label">Irregularity</div>
+          <div class="fc-text">The answer script was removed from the examination venue.</div>
+        </div>
+        <div class="fc-hint">Tap to reveal sanction →</div>
+      </div>
+      <div class="fc-back">
+        <div>
+          <div class="fc-label">Sanction / Resolution</div>
+          <div class="fc-text">The subject result declared null and void.<br><br>Disciplinary action to be taken against the school's officials.</div>
+        </div>
+        <div class="fc-hint">Tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc-scene" onclick="this.classList.toggle('flipped')">
+    <div class="fc-card">
+      <div class="fc-front">
+        <div>
+          <div class="fc-label">Irregularity</div>
+          <div class="fc-text">Crib notes, notes on a cell phone, or the use of a cell phone inside the examination venue are discovered.</div>
+        </div>
+        <div class="fc-hint">Tap to reveal sanction →</div>
+      </div>
+      <div class="fc-back">
+        <div>
+          <div class="fc-label">Sanction / Resolution</div>
+          <div class="fc-text">The subject result will be declared null and void, and the candidate will be barred from 1 - 3 examinations*.</div>
+        </div>
+        <div class="fc-hint">Tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fc-scene" onclick="this.classList.toggle('flipped')">
+    <div class="fc-card">
+      <div class="fc-front">
+        <div>
+          <div class="fc-label">Irregularity</div>
+          <div class="fc-text">The possession of a cell phone was discovered in the examination venue.</div>
+        </div>
+        <div class="fc-hint">Tap to reveal sanction →</div>
+      </div>
+      <div class="fc-back">
+        <div>
+          <div class="fc-label">Sanction / Resolution</div>
+          <div class="fc-text">The subject result will be declared null and void, and the candidate will be barred from 0 - 3 examinations*.</div>
+        </div>
+        <div class="fc-hint">Tap to flip back</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Asterisk explanation -->
+<p style="font-size:12px; color:#968C83; font-style:italic; margin-bottom:20px;">* Examination barring refers to the number of examination sessions the candidate is prohibited from writing that subject. There are two examination sessions per year: May/June and October/November.</p>
+
+<!-- Barring key -->
+<div class="bar-key">
+  <div class="bar-key-item"><div class="bar-key-dot" style="background:#D73828;"></div>Found guilty</div>
+  <div class="bar-key-item"><div class="bar-key-dot" style="background:#968C83;"></div>Barred session</div>
+  <div class="bar-key-item"><div class="bar-key-dot" style="background:#C4D600;"></div>May write again</div>
+</div>
+
+<p class="bar-title">What does examination barring mean?</p>
+
+<!-- 0-exam barring -->
+<div class="bar-case c0">
+  <div class="bar-top">
+    <span class="bar-badge">Barred from 0 examinations</span>
+    <span class="bar-exam">Found guilty: 2026 Oct/Nov</span>
+  </div>
+  <div class="bar-timeline">
+    <div class="bar-node"><div class="bar-dot guilty"></div><div class="bar-node-label">2026</div><div class="bar-node-sub">Oct/Nov<br>Guilty</div></div>
+    <div class="bar-line solid"></div>
+    <div class="bar-node"><div class="bar-dot result"></div><div class="bar-node-label">2027</div><div class="bar-node-sub">May/Jun<br>May write</div></div>
+  </div>
+  <p class="bar-note">No sessions are skipped — the candidate may write at the very next available examination.</p>
+</div>
+
+<!-- 1-exam barring -->
+<div class="bar-case c1">
+  <div class="bar-top">
+    <span class="bar-badge">Barred from 1 examination</span>
+    <span class="bar-exam">Found guilty: 2026 Oct/Nov</span>
+  </div>
+  <div class="bar-timeline">
+    <div class="bar-node"><div class="bar-dot guilty"></div><div class="bar-node-label">2026</div><div class="bar-node-sub">Oct/Nov<br>Guilty</div></div>
+    <div class="bar-line dashed"></div>
+    <div class="bar-node"><div class="bar-dot blocked"></div><div class="bar-node-label">2027</div><div class="bar-node-sub">May/Jun<br>Barred</div></div>
+    <div class="bar-line solid"></div>
+    <div class="bar-node"><div class="bar-dot result"></div><div class="bar-node-label">2027</div><div class="bar-node-sub">Oct/Nov<br>May write</div></div>
+  </div>
+  <p class="bar-note">One session is skipped (2027 May/Jun). The candidate may write in the following Oct/Nov session.</p>
+</div>
+
+<!-- 3-exam barring -->
+<div class="bar-case c3">
+  <div class="bar-top">
+    <span class="bar-badge">Barred from 3 examinations</span>
+    <span class="bar-exam">Found guilty: 2026 Oct/Nov</span>
+  </div>
+  <div class="bar-timeline">
+    <div class="bar-node"><div class="bar-dot guilty"></div><div class="bar-node-label">2026</div><div class="bar-node-sub">Oct/Nov<br>Guilty</div></div>
+    <div class="bar-line dashed"></div>
+    <div class="bar-node"><div class="bar-dot blocked"></div><div class="bar-node-label">2027</div><div class="bar-node-sub">May/Jun<br>Barred</div></div>
+    <div class="bar-line dashed"></div>
+    <div class="bar-node"><div class="bar-dot blocked"></div><div class="bar-node-label">2027</div><div class="bar-node-sub">Oct/Nov<br>Barred</div></div>
+    <div class="bar-line dashed"></div>
+    <div class="bar-node"><div class="bar-dot blocked"></div><div class="bar-node-label">2028</div><div class="bar-node-sub">May/Jun<br>Barred</div></div>
+    <div class="bar-line solid"></div>
+    <div class="bar-node"><div class="bar-dot result"></div><div class="bar-node-label">2028</div><div class="bar-node-sub">Oct/Nov<br>May write</div></div>
+  </div>
+  <p class="bar-note">Three sessions are skipped. The candidate may only write two full years after the finding of guilt.</p>
+</div>
+
+</body>
+</html>
