@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sanctions – Match the Sanction</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: auto; }
+  body {
+    font-family: 'Century Gothic','CenturyGothic','Trebuchet MS',Arial,sans-serif;
+    background: #F2F4FB;
+    color: #001489;
+    padding: 16px 20px 16px;
+  }
+
+  .intro {
+    font-size: 12px;
+    color: #968C83;
+    font-style: italic;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .q-block {
+    background: #fff;
+    border-radius: 10px;
+    border-left: 5px solid #007DBA;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,20,137,0.07);
+  }
+  .q-block.correct { border-color: #C4D600; background: #f8fce8; }
+  .q-block.wrong   { border-color: #D73828; background: #fff5f5; }
+
+  .q-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #007DBA;
+    margin-bottom: 7px;
+  }
+  .q-block.correct .q-label { color: #8FAD15; }
+  .q-block.wrong   .q-label { color: #D73828; }
+
+  .q-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #001489;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+
+  select {
+    width: 100%;
+    font-family: 'Century Gothic','CenturyGothic','Trebuchet MS',Arial,sans-serif;
+    font-size: 12px;
+    color: #001489;
+    background: #F2F4FB;
+    border: 1.5px solid #A6BBC8;
+    border-radius: 8px;
+    padding: 9px 12px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23001489' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    cursor: pointer;
+  }
+  select:focus { outline: none; border-color: #007DBA; }
+  .q-block.correct select { border-color: #C4D600; background-color: #f8fce8; }
+  .q-block.wrong   select { border-color: #D73828; background-color: #fff5f5; }
+  select:disabled { opacity: 0.7; cursor: default; }
+
+  .q-feedback {
+    font-size: 11px;
+    font-style: italic;
+    margin-top: 8px;
+    display: none;
+    line-height: 1.4;
+  }
+  .q-block.correct .q-feedback { display: block; color: #8FAD15; }
+  .q-block.wrong   .q-feedback { display: block; color: #D73828; }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Century Gothic','CenturyGothic','Trebuchet MS',Arial,sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    color: #fff;
+    transition: opacity 0.2s;
+  }
+  .btn:active { opacity: 0.8; }
+  .btn-check { background: #001489; }
+  .btn-reset { background: #968C83; }
+
+  .score-bar {
+    display: none;
+    background: #001489;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 14px;
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .score-bar .score-num {
+    font-size: 36px;
+    font-weight: 800;
+    color: #FFC600;
+    line-height: 1;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .score-bar .score-msg {
+    font-size: 12px;
+    font-style: italic;
+    opacity: 0.8;
+    margin-top: 6px;
+  }
+  .score-bar.visible { display: block; }
+
+  .asterisk-note {
+    font-size: 11px;
+    color: #968C83;
+    font-style: italic;
+    margin-top: 14px;
+  }
+</style>
+</head>
+<body>
+
+<p class="intro">For each irregularity, select the correct sanction from the dropdown.</p>
+
+<div class="q-block" id="q1">
+  <div class="q-label">Irregularity 1</div>
+  <div class="q-text">Late receipt of answer scripts or answer scripts not placed in the batch.</div>
+  <select id="s1">
+    <option value="">— Select a sanction —</option>
+    <option value="a">Disciplinary action against school officials</option>
+    <option value="b">Subject result declared null and void + disciplinary action against school officials</option>
+    <option value="c">Subject result declared null and void + barring from 1–3 examinations*</option>
+    <option value="d">Subject result declared null and void + barring from 0–3 examinations*</option>
+  </select>
+  <div class="q-feedback" id="f1"></div>
+</div>
+
+<div class="q-block" id="q2">
+  <div class="q-label">Irregularity 2</div>
+  <div class="q-text">The incorrect question paper was written.</div>
+  <select id="s2">
+    <option value="">— Select a sanction —</option>
+    <option value="a">Disciplinary action against school officials</option>
+    <option value="b">Subject result declared null and void + disciplinary action against school officials</option>
+    <option value="c">Subject result declared null and void + barring from 1–3 examinations*</option>
+    <option value="d">Subject result declared null and void + barring from 0–3 examinations*</option>
+  </select>
+  <div class="q-feedback" id="f2"></div>
+</div>
+
+<div class="q-block" id="q3">
+  <div class="q-label">Irregularity 3</div>
+  <div class="q-text">The answer script was removed from the examination venue.</div>
+  <select id="s3">
+    <option value="">— Select a sanction —</option>
+    <option value="a">Disciplinary action against school officials</option>
+    <option value="b">Subject result declared null and void + disciplinary action against school officials</option>
+    <option value="c">Subject result declared null and void + barring from 1–3 examinations*</option>
+    <option value="d">Subject result declared null and void + barring from 0–3 examinations*</option>
+  </select>
+  <div class="q-feedback" id="f3"></div>
+</div>
+
+<div class="q-block" id="q4">
+  <div class="q-label">Irregularity 4</div>
+  <div class="q-text">Crib notes, notes on a cell phone, or the use of a cell phone inside the examination venue are discovered.</div>
+  <select id="s4">
+    <option value="">— Select a sanction —</option>
+    <option value="a">Disciplinary action against school officials</option>
+    <option value="b">Subject result declared null and void + disciplinary action against school officials</option>
+    <option value="c">Subject result declared null and void + barring from 1–3 examinations*</option>
+    <option value="d">Subject result declared null and void + barring from 0–3 examinations*</option>
+  </select>
+  <div class="q-feedback" id="f4"></div>
+</div>
+
+<div class="q-block" id="q5">
+  <div class="q-label">Irregularity 5</div>
+  <div class="q-text">The possession of a cell phone was discovered in the examination venue.</div>
+  <select id="s5">
+    <option value="">— Select a sanction —</option>
+    <option value="a">Disciplinary action against school officials</option>
+    <option value="b">Subject result declared null and void + disciplinary action against school officials</option>
+    <option value="c">Subject result declared null and void + barring from 1–3 examinations*</option>
+    <option value="d">Subject result declared null and void + barring from 0–3 examinations*</option>
+  </select>
+  <div class="q-feedback" id="f5"></div>
+</div>
+
+<div class="btn-row">
+  <button class="btn btn-check" onclick="checkAnswers()">✓ Check my answers</button>
+  <button class="btn btn-reset" onclick="resetAll()">↩ Start over</button>
+</div>
+
+<div class="score-bar" id="score-bar">
+  <span class="score-num" id="score-num"></span>
+  out of 5
+  <div class="score-msg" id="score-msg"></div>
+</div>
+
+<p class="asterisk-note">* Examination barring refers to the number of examination sessions the candidate is prohibited from writing that subject.</p>
+
+<script>
+const ANSWERS = { s1:'a', s2:'a', s3:'b', s4:'c', s5:'d' };
+
+const FEEDBACK = {
+  s1: { correct: 'Correct! Late receipt of scripts is an administrative failure — disciplinary action is taken against school officials.',
+        wrong:   'Not quite. This is an administrative failure by school officials, so the sanction is disciplinary action against them.' },
+  s2: { correct: 'Correct! Writing the wrong paper is an administrative error — disciplinary action is taken against school officials.',
+        wrong:   'Not quite. Writing the incorrect paper is an administrative error, so the sanction is disciplinary action against school officials.' },
+  s3: { correct: 'Correct! Removing a script from the venue is serious — the result is declared null and void and disciplinary action follows.',
+        wrong:   'Not quite. Removing a script from the venue results in the subject result being declared null and void, plus disciplinary action against school officials.' },
+  s4: { correct: 'Correct! Using or possessing notes/cell phone content means the result is null and void and the candidate is barred from 1–3 examinations.',
+        wrong:   'Not quite. Crib notes or cell phone use results in the subject being declared null and void and barring from 1–3 examinations.' },
+  s5: { correct: 'Correct! Mere possession of a cell phone results in the subject being declared null and void and barring from 0–3 examinations.',
+        wrong:   'Not quite. Possession of a cell phone results in the subject being declared null and void and barring from 0–3 examinations.' },
+};
+
+function checkAnswers() {
+  let score = 0;
+  let allAnswered = true;
+
+  for (let i = 1; i <= 5; i++) {
+    const sel   = document.getElementById('s' + i);
+    const block = document.getElementById('q' + i);
+    const fb    = document.getElementById('f' + i);
+
+    if (!sel.value) { allAnswered = false; continue; }
+
+    const isCorrect = sel.value === ANSWERS['s' + i];
+    if (isCorrect) score++;
+
+    block.classList.remove('correct','wrong');
+    block.classList.add(isCorrect ? 'correct' : 'wrong');
+    fb.textContent = isCorrect ? FEEDBACK['s' + i].correct : FEEDBACK['s' + i].wrong;
+    sel.disabled = true;
+  }
+
+  if (!allAnswered) return;
+
+  const bar = document.getElementById('score-bar');
+  const msg = document.getElementById('score-msg');
+  document.getElementById('score-num').textContent = score;
+
+  if (score === 5) msg.textContent = 'Outstanding! You matched every sanction correctly.';
+  else if (score >= 3) msg.textContent = 'Good effort — review the highlighted items and try again.';
+  else msg.textContent = 'Keep at it — read the feedback carefully and give it another go.';
+
+  bar.classList.add('visible');
+}
+
+function resetAll() {
+  for (let i = 1; i <= 5; i++) {
+    const sel   = document.getElementById('s' + i);
+    const block = document.getElementById('q' + i);
+    const fb    = document.getElementById('f' + i);
+    sel.value    = '';
+    sel.disabled = false;
+    block.classList.remove('correct','wrong');
+    fb.textContent = '';
+  }
+  document.getElementById('score-bar').classList.remove('visible');
+}
+</script>
+</body>
+</html>
