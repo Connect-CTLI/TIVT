@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invigilation Roles: Timeline Challenge</title>
+    <style>
+        :root {
+            --primary:       #001489; /* WC_Blue — primary, ALL text */
+            --lime:          #C4D600; /* WCG_Lime — accent / highlight */
+            --bright-blue:   #007DBA; /* WCG_Bright_Blue — zone backgrounds */
+            --light-grey:    #A6BBC8; /* WCG_Light_Grey — subtle borders */
+            --teal:          #00A1A3; /* WCG_Turquoise — step done */
+            --white:         #ffffff;
+            --bg:            #f0f3f9;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            margin: 0;
+            padding: 12px;
+            color: var(--primary);
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-card {
+            width: 100%;
+            max-width: 960px;
+            background: var(--white);
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(0,20,137,0.13);
+            overflow: hidden;
+            border: 1px solid #dde3f5;
+        }
+
+        /* ── HEADER ── */
+        .header {
+            background: var(--primary);
+            color: var(--white);
+            padding: 22px 20px 18px;
+            text-align: center;
+            border-bottom: 5px solid var(--lime);
+        }
+        .header h2 { margin: 0; font-size: clamp(1rem, 4vw, 1.35rem); }
+
+        /* ── STEP INDICATOR ── */
+        .step-indicator {
+            display: flex;
+            background: #f8f9fb;
+            border-bottom: 1px solid #e4e8f5;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .step-indicator::-webkit-scrollbar { display: none; }
+
+        .step {
+            flex: 1;
+            min-width: 70px;
+            text-align: center;
+            padding: 12px 6px;
+            border-bottom: 4px solid #ddd;
+            color: #aaa;
+            font-size: clamp(0.6rem, 2.5vw, 0.72rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+        }
+        .step.active  { color: var(--primary); border-bottom-color: var(--bright-blue); background: var(--white); }
+        .step.done    { color: var(--primary); border-bottom-color: var(--teal); }
+
+        /* ── GAME BODY ── */
+        .game-body { padding: 20px 16px 10px; min-height: 300px; }
+
+        .stage-title {
+            color: var(--primary);
+            margin: 0 0 6px;
+            font-size: clamp(1rem, 4vw, 1.35rem);
+            border-left: 5px solid var(--lime);
+            padding-left: 12px;
+        }
+
+        .instructions {
+            font-size: clamp(0.8rem, 3vw, 0.9rem);
+            color: var(--primary);
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+
+        /* ── DRAG ZONES (top row — 3 columns) ── */
+        .drop-zones {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .zone {
+            min-height: 130px;
+            border-radius: 10px;
+            padding: 10px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: var(--bright-blue);
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.12);
+            transition: background 0.2s;
+        }
+        .zone.drag-over { background: #005f8f; }
+
+        .zone-header {
+            text-align: center;
+            font-size: clamp(0.65rem, 2.5vw, 0.78rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 6px 4px;
+            color: var(--white);
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            margin-bottom: 4px;
+        }
+
+        /* ── CHIP BANK (below zones) ── */
+        .chip-bank {
+            background: #f0f3f9;
+            border: 2px dashed var(--light-grey);
+            padding: 14px 10px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-height: 80px;
+            justify-content: center;
+            align-items: flex-start;
+            transition: background 0.2s, border-color 0.2s, opacity 0.4s ease, max-height 0.5s ease, padding 0.4s ease, margin 0.4s ease, min-height 0.4s ease;
+            overflow: hidden;
+            max-height: 600px;
+        }
+        .chip-bank.hidden {
+            opacity: 0;
+            max-height: 0;
+            min-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-bottom: 0;
+            border-width: 0;
+            pointer-events: none;
+        }
+        .chip-bank.drag-over {
+            background: #e8edf8;
+            border-color: var(--bright-blue);
+        }
+
+        /* ── CHIPS ── */
+        .duty-chip {
+            background: var(--white);
+            border: 2px solid var(--primary);
+            padding: 10px 13px;
+            border-radius: 8px;
+            font-size: clamp(0.75rem, 2.8vw, 0.88rem);
+            cursor: grab;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.07);
+            line-height: 1.4;
+            color: var(--primary);
+            font-weight: 500;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            max-width: 280px;
+            width: 100%;
+            transition: box-shadow 0.15s, transform 0.15s;
+            position: relative;
+        }
+        .duty-chip:active  { cursor: grabbing; }
+        .duty-chip.dragging {
+            opacity: 0.5;
+            transform: scale(0.97);
+        }
+        .duty-chip.correct {
+            background: var(--lime);
+            border-color: var(--lime);
+            color: var(--primary);
+            cursor: default;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            padding: 16px 16px;
+            border-top: 1px solid #e4e8f5;
+            background: #fafbff;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            color: var(--white);
+            border: none;
+            padding: 12px 22px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: opacity 0.2s, transform 0.1s;
+            text-transform: uppercase;
+            font-size: clamp(0.72rem, 2.5vw, 0.82rem);
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn-next   { background: var(--primary); }
+        .btn-reset  { background: var(--lime); color: var(--primary); }
+        .btn-return {
+            background: var(--primary);
+            color: var(--white);
+            text-decoration: none;
+            display: inline-block;
+            padding: 12px 22px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: clamp(0.72rem, 2.5vw, 0.82rem);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .btn:hover, .btn-return:hover { opacity: 0.88; }
+
+        #final-msg {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: clamp(0.8rem, 3vw, 0.95rem);
+            margin-right: auto;
+            display: none;
+        }
+
+        /* ── MOBILE: stack zones above bank ── */
+        @media (max-width: 560px) {
+            .drop-zones { grid-template-columns: 1fr; }
+            .zone       { min-height: 80px; }
+            .duty-chip  { max-width: 100%; }
+            .footer     { justify-content: center; }
+            #final-msg  { text-align: center; width: 100%; margin-right: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-card">
+    <div class="header">
+        <h2>Examination Invigilation Protocol</h2>
+    </div>
+
+    <div class="step-indicator">
+        <div class="step active" id="s0">PREPARATION</div>
+        <div class="step" id="s1">EXAM START</div>
+        <div class="step" id="s2">DURING WRITING</div>
+        <div class="step" id="s3">CONCLUSION</div>
+    </div>
+
+    <div class="game-body">
+        <h3 id="stage-name" class="stage-title">Phase 1</h3>
+        <p class="instructions">
+            <strong>Instructions:</strong> Drag each duty card into the correct role column. If a card doesn't belong there, it will return to the bank below.
+        </p>
+
+        <!-- Drop zones ABOVE the chip bank -->
+        <div class="drop-zones">
+            <div class="zone" id="chief">
+                <div class="zone-header">Chief Invigilator</div>
+            </div>
+            <div class="zone" id="invigilator">
+                <div class="zone-header">Invigilator</div>
+            </div>
+            <div class="zone" id="both">
+                <div class="zone-header">Both Roles</div>
+            </div>
+        </div>
+
+        <!-- Chip bank BELOW -->
+        <div id="bank" class="chip-bank"></div>
+    </div>
+
+    <div class="footer">
+        <div id="final-msg">✅ Well done — you have completed the activity successfully!</div>
+        <a id="returnBtn" href="https://ctlilms.westerncape.gov.za/lms/mod/book/view.php?id=21785&chapterid=3029"
+           class="btn-return" style="display:none;">← Return to Module 1</a>
+        <button id="redoBtn"  class="btn btn-reset"  style="display:none;" onclick="resetActivity()">Redo</button>
+        <button id="nextBtn"  class="btn btn-next"   style="display:none;" onclick="nextStage()">Next Phase →</button>
+    </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════════ */
+const stages = [
+    {
+        name: "Phase 1: Venue Preparation",
+        items: [
+            { id:"d1", text:"Ensure the examination venue is prepared at least two days before the examination.", role:"chief" },
+            { id:"d2", text:"Ensure the seating plan is displayed inside and outside the examination room.", role:"chief" },
+            { id:"d3", text:"Confirm the correct candidate-to-invigilator ratio of 1:30 is maintained.", role:"chief" }
+        ]
+    },
+    {
+        name: "Phase 2: Exam Commencement",
+        items: [
+            { id:"d4", text:"Retrieve the sealed session bag in accordance with the required GLAM key procedure.", role:"chief" },
+            { id:"d5", text:"Check each candidate's proof of identity (ID or passport) and official Admission Letter.", role:"invigilator" },
+            { id:"d6", text:"Open sealed question paper bags in front of the candidates and the principal.", role:"chief" },
+            { id:"d7", text:"Wear a name tag at all times.", role:"both" }
+        ]
+    },
+    {
+        name: "Phase 3: Supervision & Conduct",
+        items: [
+            { id:"d8",  text:"Move continuously around the venue to supervise learners while they write.", role:"invigilator" },
+            { id:"d9",  text:"Escort candidates to the bathroom when necessary.", role:"invigilator" },
+            { id:"d10", text:"Mark learners as Present or Absent on the Script Control Register(SRC).", role:"invigilator" },
+            { id:"d11", text:"Confiscate unauthorised devices or materials and mark the answer script as IRREGULARITY.", role:"invigilator" }
+        ]
+    },
+    {
+        name: "Phase 4: Script Security & Close-out",
+        items: [
+            { id:"d12", text:"Submit the irregularity report form (Annexure A) to the WCED Irregularity Unit.", role:"chief" },
+            { id:"d13", text:"Count all answer books before and after use.", role:"invigilator" },
+            { id:"d14", text:"Batch and package answer scripts after each session.", role:"both" },
+            { id:"d15", text:"Ensure no answer books remain in the venue after the session.", role:"invigilator" }
+        ]
+    }
+];
+
+let currentStageIndex = 0;
+
+/* ═══════════════════════════════════════════════════
+   STAGE LOADER
+═══════════════════════════════════════════════════ */
+function loadStage() {
+    const bank        = document.getElementById('bank');
+    const nextBtn     = document.getElementById('nextBtn');
+    const redoBtn     = document.getElementById('redoBtn');
+    const returnBtn   = document.getElementById('returnBtn');
+    const finalMsg    = document.getElementById('final-msg');
+    const stageLabel  = document.getElementById('stage-name');
+
+    bank.innerHTML = '';
+    bank.classList.remove('hidden');
+    nextBtn.style.display  = 'none';
+
+    if (currentStageIndex === 0) {
+        redoBtn.style.display   = 'none';
+        returnBtn.style.display = 'none';
+        finalMsg.style.display  = 'none';
+    }
+
+    stageLabel.innerText = stages[currentStageIndex].name;
+
+    // Clear zones, keep headers
+    ['chief','invigilator','both'].forEach(zId => {
+        const z      = document.getElementById(zId);
+        const header = z.querySelector('.zone-header');
+        z.innerHTML  = '';
+        z.appendChild(header);
+    });
+
+    // Populate bank with shuffled chips
+    const shuffled = [...stages[currentStageIndex].items].sort(() => Math.random() - 0.5);
+    shuffled.forEach(item => {
+        bank.appendChild(createChip(item));
+    });
+
+    // Update step tabs
+    document.querySelectorAll('.step').forEach((step, idx) => {
+        if      (idx < currentStageIndex)  step.className = 'step done';
+        else if (idx === currentStageIndex) step.className = 'step active';
+        else                               step.className = 'step';
+    });
+}
+
+function createChip(item) {
+    const chip = document.createElement('div');
+    chip.className   = 'duty-chip';
+    chip.draggable   = true;
+    chip.id          = item.id;
+    chip.innerText   = item.text;
+    chip.dataset.role = item.role;
+
+    // ── Desktop drag ──
+    chip.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text', chip.id);
+        chip.classList.add('dragging');
+    });
+    chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
+
+    // ── Touch drag ──
+    chip.addEventListener('touchstart', onTouchStart, { passive: true });
+
+    return chip;
+}
+
+/* ═══════════════════════════════════════════════════
+   DESKTOP DROP
+═══════════════════════════════════════════════════ */
+function allowDrop(ev) { ev.preventDefault(); }
+
+function drop(ev) {
+    ev.preventDefault();
+    const chipId = ev.dataTransfer.getData('text');
+    placeChip(chipId, ev.currentTarget);
+}
+
+// Drag-over highlight
+document.querySelectorAll('.zone, #bank').forEach(el => {
+    el.addEventListener('dragover',  e => { e.preventDefault(); el.classList.add('drag-over'); });
+    el.addEventListener('dragleave', ()=> el.classList.remove('drag-over'));
+    el.addEventListener('drop', e => {
+        el.classList.remove('drag-over');
+        const chipId = e.dataTransfer.getData('text');
+        placeChip(chipId, el);
+    });
+});
+
+function placeChip(chipId, targetEl) {
+    const chip = document.getElementById(chipId);
+    if (!chip) return;
+
+    let zone = targetEl.classList.contains('zone') ? targetEl : targetEl.closest('.zone');
+
+    if (zone && zone.id === chip.dataset.role) {
+        zone.appendChild(chip);
+        chip.classList.add('correct');
+        chip.draggable = false;
+        chip.removeEventListener('touchstart', onTouchStart);
+        checkStageComplete();
+    } else {
+        document.getElementById('bank').appendChild(chip);
+    }
+}
+
+/* ═══════════════════════════════════════════════════
+   TOUCH DRAG (mobile)
+═══════════════════════════════════════════════════ */
+let dragChip   = null;
+let ghost      = null;
+let offsetX    = 0;
+let offsetY    = 0;
+
+function onTouchStart(e) {
+    const chip = e.currentTarget;
+    if (chip.classList.contains('correct')) return;
+
+    const touch    = e.touches[0];
+    const rect     = chip.getBoundingClientRect();
+    offsetX        = touch.clientX - rect.left;
+    offsetY        = touch.clientY - rect.top;
+
+    dragChip = chip;
+
+    // Create visual ghost
+    ghost           = chip.cloneNode(true);
+    ghost.id        = '';
+    ghost.style.cssText = `
+        position:fixed; z-index:9999; pointer-events:none; opacity:0.85;
+        width:${rect.width}px; left:${touch.clientX - offsetX}px;
+        top:${touch.clientY - offsetY}px; margin:0;
+        box-shadow:0 8px 20px rgba(0,20,137,0.25);
+    `;
+    document.body.appendChild(ghost);
+
+    chip.classList.add('dragging');
+
+    document.addEventListener('touchmove',  onTouchMove,  { passive: false });
+    document.addEventListener('touchend',   onTouchEnd,   { passive: true  });
+    document.addEventListener('touchcancel',onTouchEnd,   { passive: true  });
+}
+
+function onTouchMove(e) {
+    e.preventDefault();
+    if (!ghost) return;
+    const touch = e.touches[0];
+    ghost.style.left = (touch.clientX - offsetX) + 'px';
+    ghost.style.top  = (touch.clientY - offsetY) + 'px';
+
+    // Highlight hovered zone
+    document.querySelectorAll('.zone, #bank').forEach(z => z.classList.remove('drag-over'));
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (el) {
+        const z = el.classList.contains('zone') ? el : el.closest('.zone');
+        const b = el.id === 'bank' ? el : el.closest('#bank');
+        if (z) z.classList.add('drag-over');
+        if (b) b.classList.add('drag-over');
+    }
+}
+
+function onTouchEnd(e) {
+    document.removeEventListener('touchmove',  onTouchMove);
+    document.removeEventListener('touchend',   onTouchEnd);
+    document.removeEventListener('touchcancel',onTouchEnd);
+
+    document.querySelectorAll('.zone, #bank').forEach(z => z.classList.remove('drag-over'));
+
+    if (!ghost || !dragChip) return;
+
+    const touch = (e.changedTouches || e.touches)[0];
+    ghost.remove();
+    ghost = null;
+    dragChip.classList.remove('dragging');
+
+    // Find drop target
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (el) {
+        const zone = el.classList.contains('zone') ? el : el.closest('.zone');
+        if (zone) { placeChip(dragChip.id, zone); }
+        else       { document.getElementById('bank').appendChild(dragChip); }
+    } else {
+        document.getElementById('bank').appendChild(dragChip);
+    }
+
+    dragChip = null;
+}
+
+/* ═══════════════════════════════════════════════════
+   STAGE COMPLETION
+═══════════════════════════════════════════════════ */
+function checkStageComplete() {
+    if (document.getElementById('bank').children.length === 0) {
+        // Hide the chip bank with a smooth transition
+        document.getElementById('bank').classList.add('hidden');
+
+        if (currentStageIndex < stages.length - 1) {
+            document.getElementById('nextBtn').style.display = 'inline-block';
+        } else {
+            document.getElementById('s3').className = 'step done';
+            document.getElementById('final-msg').style.display  = 'block';
+            document.getElementById('returnBtn').style.display  = 'inline-block';
+            document.getElementById('redoBtn').style.display    = 'inline-block';
+        }
+    }
+}
+
+function nextStage() {
+    currentStageIndex++;
+    loadStage();
+}
+
+function resetActivity() {
+    currentStageIndex = 0;
+    loadStage();
+}
+
+/* Init */
+loadStage();
+</script>
+</body>
+</html>
