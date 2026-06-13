@@ -239,46 +239,74 @@ const FEEDBACK = {
         wrong:   'Not quite. Possession of a cell phone results in the subject being declared null and void and barring from 0–3 examinations.' },
 };
 
+/* Track which questions have been checked */
+const checked = { s1: false, s2: false, s3: false, s4: false, s5: false };
+
+/* Live listener — fires whenever a dropdown changes after checking */
+for (let i = 1; i <= 5; i++) {
+  document.getElementById('s' + i).addEventListener('change', function() {
+    const key   = 's' + i;
+    if (!checked[key]) return; /* not yet checked, do nothing */
+    const block = document.getElementById('q' + i);
+    const fb    = document.getElementById('f' + i);
+    const isCorrect = this.value === ANSWERS[key];
+    block.classList.remove('correct','wrong');
+    if (this.value) block.classList.add(isCorrect ? 'correct' : 'wrong');
+    fb.textContent = this.value ? (isCorrect ? FEEDBACK[key].correct : FEEDBACK[key].wrong) : '';
+    updateScore();
+  });
+}
+
 function checkAnswers() {
-  let score = 0;
   let allAnswered = true;
 
   for (let i = 1; i <= 5; i++) {
-    const sel   = document.getElementById('s' + i);
+    const key   = 's' + i;
+    const sel   = document.getElementById(key);
     const block = document.getElementById('q' + i);
     const fb    = document.getElementById('f' + i);
 
     if (!sel.value) { allAnswered = false; continue; }
 
-    const isCorrect = sel.value === ANSWERS['s' + i];
-    if (isCorrect) score++;
-
+    checked[key] = true;
+    const isCorrect = sel.value === ANSWERS[key];
     block.classList.remove('correct','wrong');
     block.classList.add(isCorrect ? 'correct' : 'wrong');
-    fb.textContent = isCorrect ? FEEDBACK['s' + i].correct : FEEDBACK['s' + i].wrong;
-    sel.disabled = true;
+    fb.textContent = isCorrect ? FEEDBACK[key].correct : FEEDBACK[key].wrong;
+
+    /* Lock correct answers; leave wrong ones open for retry */
+    sel.disabled = isCorrect;
   }
 
   if (!allAnswered) return;
+  updateScore();
+}
 
+function updateScore() {
+  let score = 0;
+  for (let i = 1; i <= 5; i++) {
+    if (document.getElementById('q' + i).classList.contains('correct')) score++;
+  }
   const bar = document.getElementById('score-bar');
   const msg = document.getElementById('score-msg');
   document.getElementById('score-num').textContent = score;
 
   if (score === 5) msg.textContent = 'Outstanding! You matched every sanction correctly.';
-  else if (score >= 3) msg.textContent = 'Good effort — review the highlighted items and try again.';
-  else msg.textContent = 'Keep at it — read the feedback carefully and give it another go.';
+  else if (score >= 3) msg.textContent = 'Good effort — correct the highlighted items above.';
+  else msg.textContent = 'Keep at it — read the feedback and try the incorrect ones again.';
 
   bar.classList.add('visible');
 }
 
 function resetAll() {
   for (let i = 1; i <= 5; i++) {
-    const sel   = document.getElementById('s' + i);
+    const key   = 's' + i;
+    const sel   = document.getElementById(key);
     const block = document.getElementById('q' + i);
     const fb    = document.getElementById('f' + i);
     sel.value    = '';
     sel.disabled = false;
+    checked[key] = false;
     block.classList.remove('correct','wrong');
     fb.textContent = '';
   }
