@@ -129,7 +129,7 @@
     .fc-scene {
         perspective: 900px;
         cursor: pointer;
-        height: 180px;
+        height: 130px;
         -webkit-tap-highlight-color: transparent;
     }
 
@@ -150,7 +150,7 @@
         backface-visibility: hidden;
         -webkit-backface-visibility: hidden;
         border-radius: 10px;
-        padding: 13px 12px 10px;
+        padding: 9px 10px 8px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -171,29 +171,29 @@
     }
 
     .fc-label {
-        font-size: clamp(0.58rem, 1.8vw, 0.68rem);
+        font-size: clamp(0.58rem, 1.8vw, 0.65rem);
         font-weight: 700;
         letter-spacing: 0.1em;
         text-transform: uppercase;
-        margin-bottom: 7px;
+        margin-bottom: 4px;
     }
     .fc-front .fc-label { color: var(--white); opacity: 0.85; }
     .fc-back  .fc-label { color: var(--bright-blue); }
 
     .fc-text {
-        font-size: clamp(0.72rem, 2.2vw, 0.82rem);
+        font-size: clamp(0.7rem, 2vw, 0.78rem);
         font-weight: 600;
-        line-height: 1.5;
+        line-height: 1.4;
         flex: 1;
     }
     .fc-front .fc-text { color: var(--white); }
     .fc-back  .fc-text { color: var(--primary); }
 
     .fc-hint {
-        font-size: clamp(0.58rem, 1.8vw, 0.65rem);
+        font-size: clamp(0.55rem, 1.6vw, 0.62rem);
         font-style: italic;
         text-align: right;
-        margin-top: 8px;
+        margin-top: 5px;
     }
     .fc-front .fc-hint { color: rgba(255,255,255,0.45); }
     .fc-back  .fc-hint { color: var(--light-grey); }
@@ -278,7 +278,7 @@
         .cards-row-top .fc-scene {
             width: auto;
         }
-        .fc-scene { height: 170px; }
+        .fc-scene { height: 140px; }
     }
 
     @media (max-width: 380px) {
@@ -286,7 +286,7 @@
         .cards-row-bottom {
             grid-template-columns: 1fr;
         }
-        .fc-scene { height: auto; min-height: 140px; }
+        .fc-scene { height: auto; min-height: 110px; }
         .fc-front, .fc-back { position: relative; }
     }
 </style>
