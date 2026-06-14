@@ -1,114 +1,200 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-ZA">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Examination Barring</title>
+<title>Examination Barring – Info Block</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: auto; }
-  body {
-    font-family: 'Century Gothic','CenturyGothic','Trebuchet MS',Arial,sans-serif;
-    background: #ffffff;
-    color: #001489;
-    padding: 0 0 16px;
-  }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  p { font-size: 14px; line-height: 1.6; color: #001489; margin-bottom: 14px; }
+    body {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        background: transparent;
+        color: #001489;
+        padding: 0;
+    }
 
-  .bar-key { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
-  .bar-key-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #001489; }
-  .bar-key-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    p {
+        font-size: clamp(0.78rem, 2.8vw, 0.87rem);
+        line-height: 1.65;
+        color: #001489;
+        margin-bottom: 10px;
+    }
 
-  .bar-case { background: #ffffff; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; border-left: 5px solid #ccc; }
-  .bar-case.c0 { border-color: #C4D600; }
-  .bar-case.c1 { border-color: #007DBA; }
-  .bar-case.c3 { border-color: #D73828; }
-  .bar-case:last-child { margin-bottom: 0; }
+    .bar-key {
+        display: flex;
+        gap: 14px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+    }
+    .bar-key-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: clamp(0.65rem, 2vw, 0.72rem);
+        color: #001489;
+    }
+    .bar-key-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-  .bar-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
-  .bar-badge { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; white-space: nowrap; }
-  .bar-case.c0 .bar-badge { background: #C4D600; color: #001489; }
-  .bar-case.c1 .bar-badge { background: #007DBA; color: #fff; }
-  .bar-case.c3 .bar-badge { background: #D73828; color: #fff; }
+    .bar-case {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 9px 12px;
+        margin-bottom: 10px;
+        border-left: 4px solid #ccc;
+        border-bottom-left-radius: 6px;
+        border-bottom-right-radius: 6px;
+    }
+    .bar-case:last-child { margin-bottom: 0; }
+    .bar-case.c0 { border-color: #C4D600; box-shadow: 0 4px 0 0 #C4D600, 0 2px 8px rgba(0,20,137,0.06); }
+    .bar-case.c1 { border-color: #007DBA; box-shadow: 0 4px 0 0 #007DBA, 0 2px 8px rgba(0,20,137,0.06); }
+    .bar-case.c3 { border-color: #D73828; box-shadow: 0 4px 0 0 #D73828, 0 2px 8px rgba(0,20,137,0.06); }
 
-  .bar-exam { font-size: 12px; color: #001489; font-style: italic; }
+    .bar-top {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        flex-wrap: wrap;
+    }
+    .bar-badge {
+        font-size: clamp(0.58rem, 1.8vw, 0.65rem);
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 2px 8px;
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+    .bar-case.c0 .bar-badge { background: #C4D600; color: #001489; }
+    .bar-case.c1 .bar-badge { background: #007DBA; color: #ffffff; }
+    .bar-case.c3 .bar-badge { background: #D73828; color: #ffffff; }
 
-  .bar-timeline { display: flex; align-items: flex-start; overflow-x: auto; padding-bottom: 4px; }
-  .bar-node { display: flex; flex-direction: column; align-items: center; min-width: 80px; }
-  .bar-dot { width: 14px; height: 14px; border-radius: 50%; margin-bottom: 6px; flex-shrink: 0; }
-  .bar-dot.guilty  { background: #D73828; }
-  .bar-dot.result  { background: #C4D600; }
-  .bar-dot.blocked { background: #001489; }
-  .bar-node-label { font-size: 11px; font-weight: 700; color: #001489; text-align: center; line-height: 1.3; }
-  .bar-node-sub   { font-size: 10px; color: #001489; text-align: center; margin-top: 2px; line-height: 1.3; }
+    .bar-exam {
+        font-size: clamp(0.62rem, 1.8vw, 0.68rem);
+        color: #001489;
+        font-style: italic;
+    }
 
-  .bar-line { flex: 1; height: 2px; min-width: 24px; margin-top: 6px; }
-  .bar-line.solid  { background: #007DBA; }
-  .bar-line.dashed { background: repeating-linear-gradient(90deg,#007DBA 0 6px,transparent 6px 12px); }
+    .bar-timeline {
+        display: flex;
+        align-items: flex-start;
+        overflow-x: auto;
+        padding-bottom: 2px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .bar-timeline::-webkit-scrollbar { display: none; }
 
-  .bar-note { font-size: 12px; color: #001489; font-style: italic; border-top: 1px solid #007DBA; padding-top: 8px; margin-top: 10px; margin-bottom: 0; }
+    .bar-node {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 46px;
+    }
+    .bar-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        margin-bottom: 3px;
+        flex-shrink: 0;
+    }
+    .bar-dot.guilty  { background: #D73828; }
+    .bar-dot.result  { background: #C4D600; border: 1.5px solid #8a9e00; }
+    .bar-dot.blocked { background: #001489; }
+
+    .bar-node-label {
+        font-size: clamp(0.58rem, 1.6vw, 0.65rem);
+        font-weight: 700;
+        color: #001489;
+        text-align: center;
+        line-height: 1.2;
+    }
+    .bar-node-sub {
+        font-size: clamp(0.52rem, 1.4vw, 0.58rem);
+        color: #001489;
+        text-align: center;
+        margin-top: 1px;
+        line-height: 1.25;
+        opacity: 0.7;
+    }
+
+    .bar-line {
+        flex: 1;
+        height: 2px;
+        min-width: 12px;
+        margin-top: 4px;
+    }
+    .bar-line.solid  { background: #007DBA; }
+    .bar-line.dashed { background: repeating-linear-gradient(90deg, #007DBA 0 4px, transparent 4px 8px); }
+
+    .bar-note {
+        font-size: clamp(0.62rem, 1.8vw, 0.68rem);
+        color: #001489;
+        font-style: italic;
+        border-top: 1px solid #e4e8f5;
+        padding-top: 5px;
+        margin-top: 7px;
+        opacity: 0.82;
+    }
 </style>
 </head>
 <body>
 
-<p>You would have noticed the <strong>asterisk (*)</strong> next to the word "examinations" at the end of the last two sanctions. What does <strong>examination barring</strong> mean?</p>
 
-<p>There are two examinations in a year: the May/June (for National Senior Certificate (NSC) and Senior Certificate (SC) candidates) and the October/November examinations (for National Senior Certificate (NSC) candidates). When a candidate is found guilty of an irregularity and is barred from writing that subject in 0 examinations, this means he/she may write that subject in the next examination.</p>
-
-<p>Here are <strong>three examples</strong> to explain examination barring more clearly.</p>
+<p>Here are <strong>three examples</strong> to illustrate what examination barring means in practice.</p>
 
 <div class="bar-key">
-  <div class="bar-key-item"><div class="bar-key-dot" style="background:#D73828;"></div>Found guilty</div>
-  <div class="bar-key-item"><div class="bar-key-dot" style="background:#001489;"></div>Barred session</div>
-  <div class="bar-key-item"><div class="bar-key-dot" style="background:#C4D600;"></div>May write again</div>
+    <div class="bar-key-item"><div class="bar-key-dot" style="background:#D73828;"></div>Found guilty</div>
+    <div class="bar-key-item"><div class="bar-key-dot" style="background:#001489;"></div>Barred session</div>
+    <div class="bar-key-item"><div class="bar-key-dot" style="background:#C4D600; border:1.5px solid #8a9e00;"></div>May write again</div>
 </div>
 
 <div class="bar-case c0">
-  <div class="bar-top">
-    <span class="bar-badge">Barred from 0 examinations</span>
-    <span class="bar-exam">Found guilty: 2026 Oct/Nov</span>
-  </div>
-  <div class="bar-timeline">
-    <div class="bar-node"><div class="bar-dot guilty"></div><div class="bar-node-label">2026</div><div class="bar-node-sub">Oct/Nov<br>Guilty</div></div>
-    <div class="bar-line solid"></div>
-    <div class="bar-node"><div class="bar-dot result"></div><div class="bar-node-label">2027</div><div class="bar-node-sub">May/Jun<br>May write</div></div>
-  </div>
-  <p class="bar-note">No sessions are skipped — the candidate may write at the very next available examination.</p>
+    <div class="bar-top">
+        <span class="bar-badge">Barred from 0 examinations</span>
+        <span class="bar-exam">Found guilty: 2026 Oct/Nov</span>
+    </div>
+    <div class="bar-timeline">
+        <div class="bar-node"><div class="bar-dot guilty"></div><div class="bar-node-label">2026</div><div class="bar-node-sub">Oct/Nov<br>Guilty</div></div>
+        <div class="bar-line solid"></div>
+        <div class="bar-node"><div class="bar-dot result"></div><div class="bar-node-label">2027</div><div class="bar-node-sub">May/Jun<br>May write</div></div>
+    </div>
+    <p class="bar-note">No sessions are skipped — the candidate may write at the very next available examination.</p>
 </div>
 
 <div class="bar-case c1">
-  <div class="bar-top">
-    <span class="bar-badge">Barred from 1 examination</span>
-    <span class="bar-exam">Found guilty: 2026 Oct/Nov</span>
-  </div>
-  <div class="bar-timeline">
-    <div class="bar-node"><div class="bar-dot guilty"></div><div class="bar-node-label">2026</div><div class="bar-node-sub">Oct/Nov<br>Guilty</div></div>
-    <div class="bar-line dashed"></div>
-    <div class="bar-node"><div class="bar-dot blocked"></div><div class="bar-node-label">2027</div><div class="bar-node-sub">May/Jun<br>Barred</div></div>
-    <div class="bar-line solid"></div>
-    <div class="bar-node"><div class="bar-dot result"></div><div class="bar-node-label">2027</div><div class="bar-node-sub">Oct/Nov<br>May write</div></div>
-  </div>
-  <p class="bar-note">One session is skipped (2027 May/Jun). The candidate may write in the following Oct/Nov session.</p>
+    <div class="bar-top">
+        <span class="bar-badge">Barred from 1 examination</span>
+        <span class="bar-exam">Found guilty: 2026 Oct/Nov</span>
+    </div>
+    <div class="bar-timeline">
+        <div class="bar-node"><div class="bar-dot guilty"></div><div class="bar-node-label">2026</div><div class="bar-node-sub">Oct/Nov<br>Guilty</div></div>
+        <div class="bar-line dashed"></div>
+        <div class="bar-node"><div class="bar-dot blocked"></div><div class="bar-node-label">2027</div><div class="bar-node-sub">May/Jun<br>Barred</div></div>
+        <div class="bar-line solid"></div>
+        <div class="bar-node"><div class="bar-dot result"></div><div class="bar-node-label">2027</div><div class="bar-node-sub">Oct/Nov<br>May write</div></div>
+    </div>
+    <p class="bar-note">One session is skipped (2027 May/Jun). The candidate may write in the following Oct/Nov session.</p>
 </div>
 
 <div class="bar-case c3">
-  <div class="bar-top">
-    <span class="bar-badge">Barred from 3 examinations</span>
-    <span class="bar-exam">Found guilty: 2026 Oct/Nov</span>
-  </div>
-  <div class="bar-timeline">
-    <div class="bar-node"><div class="bar-dot guilty"></div><div class="bar-node-label">2026</div><div class="bar-node-sub">Oct/Nov<br>Guilty</div></div>
-    <div class="bar-line dashed"></div>
-    <div class="bar-node"><div class="bar-dot blocked"></div><div class="bar-node-label">2027</div><div class="bar-node-sub">May/Jun<br>Barred</div></div>
-    <div class="bar-line dashed"></div>
-    <div class="bar-node"><div class="bar-dot blocked"></div><div class="bar-node-label">2027</div><div class="bar-node-sub">Oct/Nov<br>Barred</div></div>
-    <div class="bar-line dashed"></div>
-    <div class="bar-node"><div class="bar-dot blocked"></div><div class="bar-node-label">2028</div><div class="bar-node-sub">May/Jun<br>Barred</div></div>
-    <div class="bar-line solid"></div>
-    <div class="bar-node"><div class="bar-dot result"></div><div class="bar-node-label">2028</div><div class="bar-node-sub">Oct/Nov<br>May write</div></div>
-  </div>
-  <p class="bar-note">Three sessions are skipped. The candidate may only write two full years after the finding of guilt.</p>
+    <div class="bar-top">
+        <span class="bar-badge">Barred from 3 examinations</span>
+        <span class="bar-exam">Found guilty: 2026 Oct/Nov</span>
+    </div>
+    <div class="bar-timeline">
+        <div class="bar-node"><div class="bar-dot guilty"></div><div class="bar-node-label">2026</div><div class="bar-node-sub">Oct/Nov<br>Guilty</div></div>
+        <div class="bar-line dashed"></div>
+        <div class="bar-node"><div class="bar-dot blocked"></div><div class="bar-node-label">2027</div><div class="bar-node-sub">May/Jun<br>Barred</div></div>
+        <div class="bar-line dashed"></div>
+        <div class="bar-node"><div class="bar-dot blocked"></div><div class="bar-node-label">2027</div><div class="bar-node-sub">Oct/Nov<br>Barred</div></div>
+        <div class="bar-line dashed"></div>
+        <div class="bar-node"><div class="bar-dot blocked"></div><div class="bar-node-label">2028</div><div class="bar-node-sub">May/Jun<br>Barred</div></div>
+        <div class="bar-line solid"></div>
+        <div class="bar-node"><div class="bar-dot result"></div><div class="bar-node-label">2028</div><div class="bar-node-sub">Oct/Nov<br>May write</div></div>
+    </div>
+    <p class="bar-note">Three sessions are skipped. The candidate may only write two full years after the finding of guilt.</p>
 </div>
 
 </body>
