@@ -7,13 +7,6 @@
 <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-        font-family: 'Segoe UI', system-ui, sans-serif;
-        background: transparent;
-        color: #001489;
-        padding: 0;
-    }
-
     p {
         font-size: clamp(0.78rem, 2.8vw, 0.87rem);
         line-height: 1.65;
@@ -128,6 +121,42 @@
     .bar-line.solid  { background: #007DBA; }
     .bar-line.dashed { background: repeating-linear-gradient(90deg, #007DBA 0 4px, transparent 4px 8px); }
 
+    /* ── LAYOUT ── */
+    body {
+        display: flex;
+        justify-content: center;
+        padding: 12px;
+        background: #f0f3f9;
+    }
+
+    .main-card {
+        width: 100%;
+        max-width: 960px;
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 8px 32px rgba(0,20,137,0.13);
+        border: 1px solid #dde3f5;
+        overflow: hidden;
+    }
+
+    .header {
+        background: #001489;
+        color: #ffffff;
+        padding: 22px 20px 18px;
+        text-align: center;
+        border-bottom: 5px solid #C4D600;
+    }
+    .header h2 {
+        margin: 0;
+        font-size: clamp(1rem, 4vw, 1.35rem);
+        font-weight: 700;
+        font-family: 'Century Gothic','CenturyGothic','Trebuchet MS',Arial,sans-serif;
+    }
+
+    .card-body {
+        padding: 16px;
+    }
+
     .bar-note {
         font-size: clamp(0.62rem, 1.8vw, 0.68rem);
         color: #001489;
@@ -140,10 +169,11 @@
 </style>
 </head>
 <body>
-
-
-<p>Here are <strong>three examples</strong> to illustrate what examination barring means in practice.</p>
-
+<div class="main-card">
+    <div class="header">
+        <h2>Examination Barring — What Does It Mean?</h2>
+    </div>
+    <div class="card-body">
 <div class="bar-key">
     <div class="bar-key-item"><div class="bar-key-dot" style="background:#D73828;"></div>Found guilty</div>
     <div class="bar-key-item"><div class="bar-key-dot" style="background:#001489;"></div>Barred session</div>
@@ -197,5 +227,7 @@
     <p class="bar-note">Three sessions are skipped. The candidate may only write two full years after the finding of guilt.</p>
 </div>
 
+    </div><!-- /card-body -->
+</div><!-- /main-card -->
 </body>
 </html>
