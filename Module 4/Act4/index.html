@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Concessions – True or False</title>
+<style>
+    :root {
+        --primary:      #001489;
+        --lime:         #C4D600;
+        --bright-blue:  #007DBA;
+        --light-grey:   #A6BBC8;
+        --red:          #D73828;
+        --white:        #ffffff;
+        --bg:           #f0f3f9;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: 'Century Gothic','CenturyGothic','Trebuchet MS',Arial,sans-serif;
+        background: var(--bg);
+        color: var(--primary);
+        display: flex;
+        justify-content: center;
+        padding: 12px;
+    }
+
+    .main-card {
+        width: 100%;
+        max-width: 960px;
+        background: var(--white);
+        border-radius: 14px;
+        box-shadow: 0 8px 32px rgba(0,20,137,0.13);
+        overflow: hidden;
+        border: 1px solid #dde3f5;
+    }
+
+    /* ── HEADER ── */
+    .header {
+        background: var(--primary);
+        color: var(--white);
+        padding: 22px 20px 18px;
+        text-align: center;
+        border-bottom: 5px solid var(--lime);
+    }
+    .header h2 {
+        margin: 0;
+        font-size: clamp(1rem, 4vw, 1.35rem);
+        font-weight: 700;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap { height: 5px; background: #dde3f5; }
+    .progress-fill {
+        height: 5px;
+        background: var(--bright-blue);
+        transition: width 0.4s ease;
+        width: 0%;
+    }
+
+    /* ── BODY ── */
+    .game-body {
+        padding: 20px 16px 10px;
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    .stage-title {
+        color: var(--primary);
+        margin: 0 0 6px;
+        font-size: clamp(1rem, 4vw, 1.2rem);
+        border-left: 5px solid var(--lime);
+        padding-left: 12px;
+        font-weight: 700;
+    }
+
+    .instructions {
+        font-size: clamp(0.8rem, 3vw, 0.9rem);
+        color: var(--primary);
+        margin-bottom: 18px;
+        line-height: 1.5;
+    }
+
+    /* ── CARD ── */
+    .card-wrap { margin-bottom: 14px; }
+
+    .card {
+        background: var(--white);
+        border-radius: 10px;
+        border: 1px solid #dde3f5;
+        border-top: 5px solid var(--bright-blue);
+        box-shadow: 0 4px 16px rgba(0,20,137,0.10);
+        padding: 18px 16px 14px;
+        text-align: center;
+        min-height: 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease, opacity 0.25s ease;
+    }
+
+    @keyframes bounceIn {
+        0%   { transform: scale(0.9) translateY(8px); opacity: 0; }
+        60%  { transform: scale(1.02) translateY(-2px); opacity: 1; }
+        100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    .card.bounce-in       { animation: bounceIn 0.35s cubic-bezier(.34,1.56,.64,1) both; }
+    .card.fly-out-correct { transform: translateX(110px) rotate(6deg);   opacity: 0; }
+    .card.fly-out-wrong   { transform: translateX(-110px) rotate(-6deg); opacity: 0; }
+
+    .card-counter {
+        font-size: clamp(0.6rem, 2vw, 0.68rem);
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--bright-blue);
+        margin-bottom: 8px;
+        opacity: 0.75;
+    }
+    .card-text {
+        font-size: clamp(0.82rem, 3vw, 0.95rem);
+        font-weight: 600;
+        color: var(--primary);
+        line-height: 1.55;
+    }
+
+    /* ── FEEDBACK ── */
+    .card-feedback { display: none; margin-top: 12px; width: 100%; }
+    .card-feedback.visible { display: block; }
+
+    .fb-pill {
+        display: inline-block;
+        font-size: clamp(0.72rem, 2.5vw, 0.82rem);
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 20px;
+    }
+    .fb-pill.correct { background: var(--lime); color: var(--primary); }
+    .fb-pill.wrong   { background: var(--red);  color: var(--white); }
+
+    .fb-reason {
+        display: none;
+        margin-top: 9px;
+        font-size: clamp(0.72rem, 2.5vw, 0.8rem);
+        font-style: italic;
+        color: var(--primary);
+        line-height: 1.5;
+        background: #f0f3f9;
+        border-left: 3px solid var(--bright-blue);
+        border-radius: 0 8px 8px 0;
+        padding: 8px 12px;
+        text-align: left;
+    }
+    .fb-reason.visible { display: block; }
+
+    /* ── TRUE / FALSE BUTTONS ── */
+    .tf-label {
+        font-size: clamp(0.62rem, 2vw, 0.7rem);
+        font-weight: 700;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--primary);
+        text-align: center;
+        margin-bottom: 10px;
+        opacity: 0.5;
+    }
+
+    .tf-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .tf-btn {
+        border: none;
+        border-radius: 8px;
+        padding: 16px 12px;
+        font-family: 'Century Gothic','CenturyGothic','Trebuchet MS',Arial,sans-serif;
+        font-size: clamp(0.9rem, 3vw, 1.05rem);
+        font-weight: 700;
+        color: var(--white);
+        cursor: pointer;
+        text-align: center;
+        transition: transform 0.12s, opacity 0.2s;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+    .tf-btn[data-val="T"] { background: var(--bright-blue); }
+    .tf-btn[data-val="F"] { background: var(--primary); }
+    .tf-btn:active  { transform: scale(0.97); }
+    .tf-btn.disabled { opacity: 0.38; pointer-events: none; }
+
+    .tf-btn.flash-correct { animation: flashCorrect 0.5s ease forwards; }
+    .tf-btn.flash-wrong   { animation: flashWrong   0.5s ease forwards; }
+
+    @keyframes flashCorrect {
+        0%   { filter: brightness(1); }
+        40%  { filter: brightness(1.35); }
+        100% { filter: brightness(1); }
+    }
+    @keyframes flashWrong {
+        0%   { filter: brightness(1); }
+        35%  { filter: brightness(0.45) grayscale(0.5); }
+        100% { filter: brightness(1); }
+    }
+
+    /* ── RESULTS ── */
+    .results-screen { display: none; padding: 4px 0 8px; }
+    .results-screen.visible { display: block; }
+
+    .result-hero {
+        background: var(--primary);
+        border-radius: 10px;
+        padding: 24px 20px;
+        margin-bottom: 12px;
+        text-align: center;
+        border-bottom: 4px solid var(--lime);
+    }
+    .result-emoji { font-size: 38px; margin-bottom: 8px; }
+    .result-score {
+        font-size: clamp(2.4rem, 10vw, 3.2rem);
+        font-weight: 800;
+        color: var(--lime);
+        line-height: 1;
+    }
+    .result-denom {
+        font-size: clamp(0.7rem, 2.2vw, 0.78rem);
+        color: var(--white);
+        opacity: 0.6;
+        margin-top: 3px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+    .result-msg {
+        font-size: clamp(0.78rem, 2.8vw, 0.88rem);
+        font-style: italic;
+        margin-top: 12px;
+        line-height: 1.6;
+        color: var(--white);
+        opacity: 0.9;
+    }
+
+    .game-area.hidden { display: none; }
+
+    /* ── FOOTER ── */
+    .footer {
+        padding: 14px 16px;
+        border-top: 1px solid #e4e8f5;
+        background: #fafbff;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .btn {
+        color: var(--white);
+        border: none;
+        padding: 11px 22px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 700;
+        font-family: 'Century Gothic','CenturyGothic','Trebuchet MS',Arial,sans-serif;
+        transition: opacity 0.2s, transform 0.1s;
+        text-transform: uppercase;
+        font-size: clamp(0.72rem, 2.5vw, 0.82rem);
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+        display: none;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn:hover  { opacity: 0.88; }
+    .btn-reset  { background: var(--lime); color: var(--primary); }
+</style>
+</head>
+<body>
+
+<div class="main-card">
+
+    <div class="header">
+        <h2>Accommodation Concessions – True or False?</h2>
+    </div>
+
+    <div class="progress-wrap">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <div class="game-body">
+        <h3 class="stage-title">True or False?</h3>
+        <p class="instructions">
+            <strong>Instructions:</strong> Read each statement about examination concessions and tap <strong>True</strong> or <strong>False</strong>. You will receive immediate feedback after each answer.
+        </p>
+
+        <!-- Game area -->
+        <div class="game-area" id="game-area">
+            <div class="card-wrap">
+                <div class="card" id="card">
+                    <p class="card-counter" id="card-counter">Statement 1 of 7</p>
+                    <p class="card-text"    id="card-text"></p>
+                    <div class="card-feedback" id="card-feedback">
+                        <span class="fb-pill"   id="fb-pill"></span>
+                        <div  class="fb-reason" id="fb-reason"></div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="tf-label">Is this statement true or false?</p>
+            <div class="tf-grid">
+                <button class="tf-btn" data-val="T" onclick="answer('T')">✓ True</button>
+                <button class="tf-btn" data-val="F" onclick="answer('F')">✗ False</button>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div class="results-screen" id="results-screen">
+            <div class="result-hero">
+                <div class="result-emoji" id="result-emoji"></div>
+                <div class="result-score" id="result-score"></div>
+                <div class="result-denom" id="result-denom">out of 7</div>
+                <p class="result-msg"    id="result-msg"></p>
+            </div>
+        </div>
+
+    </div><!-- /game-body -->
+
+    <div class="footer">
+        <button class="btn btn-reset" id="reset-btn" onclick="restart()">↩ Start Over</button>
+    </div>
+
+</div><!-- /main-card -->
+
+<script>
+const ITEMS = [
+    {
+        text:    'A candidate may be allowed extra time without a written letter of approval from the WCED.',
+        answer:  'F',
+        correct: 'Correct — False. Only candidates with written WCED approval may be allowed extra time.',
+        wrong:   'This is False. Only candidates with written WCED approval may be allowed extra time.'
+    },
+    {
+        text:    "The approval letter placed inside the answer book must include the candidate's name.",
+        answer:  'F',
+        correct: "Correct — False. The letter must not contain the candidate's name — only their examination number.",
+        wrong:   "This is False. The letter must not contain the candidate's name — only their examination number."
+    },
+    {
+        text:    'When a computer is used, it must be stand-alone with no internet access and all supporting programs disabled.',
+        answer:  'T',
+        correct: 'Correct — True. All three conditions must be met before the examination begins.',
+        wrong:   'This is True. All three conditions — stand-alone, no internet, supporting programs disabled — must be met.'
+    },
+    {
+        text:    'The scribe may also serve as the invigilator during the same examination session.',
+        answer:  'F',
+        correct: 'Correct — False. The scribe or reader must not serve as invigilator. A separate invigilator must be present.',
+        wrong:   'This is False. The scribe or reader must not serve as invigilator at the same time — a separate invigilator must be present.'
+    },
+    {
+        text:    'A recording must be made when a candidate writes in a separate venue with a scribe.',
+        answer:  'T',
+        correct: 'Correct — True. A continuous recording must be made and retained by the school in the safe or strong room.',
+        wrong:   'This is True. A continuous recording must be made and retained by the school in the safe or strong room.'
+    },
+    {
+        text:    'An emergency concession may be implemented by the invigilator without approval from the WCED.',
+        answer:  'F',
+        correct: 'Correct — False. Approval must be obtained through the Chief Invigilator, Assessment Coordinator and SLES unit at Head Office before implementation.',
+        wrong:   'This is False. Approval must be obtained through the Chief Invigilator, Assessment Coordinator and SLES unit at Head Office first.'
+    },
+    {
+        text:    'A reader pen or computer may be used instead of a human reader, provided this is approved by the WCED.',
+        answer:  'T',
+        correct: 'Correct — True. This is permitted and does not necessarily require a separate venue.',
+        wrong:   'This is True. A reader pen or computer may be used instead of a human reader, provided WCED approval has been granted.'
+    },
+];
+
+const TOTAL = ITEMS.length;
+
+let queue       = [];
+let missed      = [];
+let current     = 0;
+let correct     = 0;
+let passCorrect = 0;
+let passWrong   = 0;
+let passSize    = 0;
+let roundNum    = 1;
+let answered    = false;
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function init() {
+    queue       = shuffle(ITEMS);
+    missed      = [];
+    current     = 0;
+    correct     = 0;
+    passCorrect = 0;
+    passWrong   = 0;
+    passSize    = queue.length;
+    roundNum    = 1;
+    answered    = false;
+    document.getElementById('results-screen').classList.remove('visible');
+    document.getElementById('game-area').classList.remove('hidden');
+    document.getElementById('reset-btn').style.display = 'none';
+    showCard();
+}
+
+function startRetryPass() {
+    queue       = shuffle(missed);
+    missed      = [];
+    current     = 0;
+    passCorrect = 0;
+    passWrong   = 0;
+    passSize    = queue.length;
+    roundNum++;
+    answered    = false;
+    document.getElementById('results-screen').classList.remove('visible');
+    document.getElementById('game-area').classList.remove('hidden');
+    document.getElementById('reset-btn').style.display = 'none';
+    showCard();
+}
+
+function showCard() {
+    answered = false;
+    const item = queue[current];
+
+    const roundLabel = roundNum > 1 ? ` · Retry ${roundNum - 1}` : '';
+    document.getElementById('card-counter').textContent = `Statement ${current + 1} of ${queue.length}${roundLabel}`;
+    document.getElementById('card-text').textContent    = item.text;
+
+    const fb     = document.getElementById('card-feedback');
+    const pill   = document.getElementById('fb-pill');
+    const reason = document.getElementById('fb-reason');
+    fb.classList.remove('visible');
+    pill.className     = 'fb-pill';
+    pill.textContent   = '';
+    reason.classList.remove('visible');
+    reason.textContent = '';
+
+    document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('disabled'));
+
+    const card = document.getElementById('card');
+    card.classList.remove('fly-out-correct','fly-out-wrong','bounce-in');
+    card.style.transform = '';
+    card.style.opacity   = '';
+    requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add('bounce-in')));
+
+    updateProgress();
+}
+
+function answer(chosen) {
+    if (answered) return;
+    answered = true;
+    document.querySelectorAll('.tf-btn').forEach(b => b.classList.add('disabled'));
+
+    const item      = queue[current];
+    const isCorrect = chosen === item.answer;
+
+    const btn = document.querySelector(`.tf-btn[data-val="${chosen}"]`);
+    if (btn) {
+        btn.classList.add(isCorrect ? 'flash-correct' : 'flash-wrong');
+        setTimeout(() => btn.classList.remove('flash-correct','flash-wrong'), 550);
+    }
+
+    const pill   = document.getElementById('fb-pill');
+    const reason = document.getElementById('fb-reason');
+    const fb     = document.getElementById('card-feedback');
+
+    if (isCorrect) {
+        pill.textContent = '✓ Correct!';
+        pill.className   = 'fb-pill correct';
+        passCorrect++;
+        correct++;
+    } else {
+        pill.textContent   = '✗ Not quite.';
+        pill.className     = 'fb-pill wrong';
+        reason.textContent = item.wrong;
+        reason.classList.add('visible');
+        passWrong++;
+        missed.push(item);
+    }
+    fb.classList.add('visible');
+
+    const pause = isCorrect ? 1000 : 4000;
+    const card  = document.getElementById('card');
+
+    setTimeout(() => {
+        card.classList.remove('bounce-in');
+        card.classList.add(isCorrect ? 'fly-out-correct' : 'fly-out-wrong');
+        setTimeout(() => {
+            current++;
+            if (current < queue.length) showCard();
+            else showRoundResults();
+        }, 300);
+    }, pause);
+}
+
+function updateProgress() {
+    document.getElementById('progress-fill').style.width = ((current / queue.length) * 100) + '%';
+}
+
+function showRoundResults() {
+    document.getElementById('progress-fill').style.width = '100%';
+    document.getElementById('game-area').classList.add('hidden');
+    document.getElementById('reset-btn').style.display = 'inline-block';
+
+    if (missed.length === 0) {
+        const isFirstTry = roundNum === 1;
+        document.getElementById('result-emoji').textContent = '🏆';
+        document.getElementById('result-score').textContent = TOTAL;
+        document.getElementById('result-denom').textContent = `out of ${TOTAL}`;
+        document.getElementById('result-msg').textContent   = isFirstTry
+            ? `Perfect! You answered every statement correctly on the first attempt.`
+            : `Well done! You worked through ${roundNum - 1} retr${roundNum - 1 === 1 ? 'y' : 'ies'} and got everything right.`;
+        document.getElementById('reset-btn').textContent = '↩ Start Over';
+        document.getElementById('reset-btn').onclick     = init;
+    } else {
+        const remaining = missed.length;
+        document.getElementById('result-emoji').textContent = '📚';
+        document.getElementById('result-score').textContent = passCorrect;
+        document.getElementById('result-denom').textContent = `correct out of ${passSize} this round`;
+        document.getElementById('result-msg').textContent   = `You got ${passCorrect} right and ${passWrong} wrong this round. The ${remaining} incorrect statement${remaining === 1 ? '' : 's'} will come up again now.`;
+        document.getElementById('reset-btn').textContent = `↩ Retry ${remaining} incorrect statement${remaining === 1 ? '' : 's'}`;
+        document.getElementById('reset-btn').onclick     = startRetryPass;
+    }
+
+    document.getElementById('results-screen').classList.add('visible');
+}
+
+function restart() { init(); }
+
+init();
+</script>
+</body>
+</html>
