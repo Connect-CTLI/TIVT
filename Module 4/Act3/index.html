@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sanctions – Match the Sanction</title>
+<style>
+    :root {
+        --primary:      #001489;
+        --lime:         #C4D600;
+        --bright-blue:  #007DBA;
+        --light-grey:   #A6BBC8;
+        --teal:         #00A1A3;
+        --red:          #D73828;
+        --white:        #ffffff;
+        --bg:           #f0f3f9;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: 'Century Gothic','CenturyGothic','Trebuchet MS',Arial,sans-serif;
+        background: var(--bg);
+        color: var(--primary);
+        display: flex;
+        justify-content: center;
+        padding: 12px;
+    }
+
+    .main-card {
+        width: 100%;
+        max-width: 960px;
+        background: var(--white);
+        border-radius: 14px;
+        box-shadow: 0 8px 32px rgba(0,20,137,0.13);
+        overflow: hidden;
+        border: 1px solid #dde3f5;
+    }
+
+    /* ── HEADER ── */
+    .header {
+        background: var(--primary);
+        color: var(--white);
+        padding: 22px 20px 18px;
+        text-align: center;
+        border-bottom: 5px solid var(--lime);
+    }
+    .header h2 {
+        margin: 0;
+        font-size: clamp(1rem, 4vw, 1.35rem);
+        font-weight: 700;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap { height: 5px; background: #dde3f5; }
+    .progress-fill {
+        height: 5px;
+        background: var(--bright-blue);
+        transition: width 0.4s ease;
+        width: 0%;
+    }
+
+    /* ── BODY ── */
+    .game-body {
+        padding: 20px 16px 10px;
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    .stage-title {
+        color: var(--primary);
+        margin: 0 0 6px;
+        font-size: clamp(1rem, 4vw, 1.2rem);
+        border-left: 5px solid var(--lime);
+        padding-left: 12px;
+        font-weight: 700;
+    }
+
+    .instructions {
+        font-size: clamp(0.8rem, 3vw, 0.9rem);
+        color: var(--primary);
+        margin-bottom: 18px;
+        line-height: 1.5;
+    }
+
+    /* ── IRREGULARITY CARD ── */
+    .card-wrap { margin-bottom: 14px; }
+
+    .card {
+        background: var(--white);
+        border-radius: 10px;
+        border: 1px solid #dde3f5;
+        border-top: 5px solid var(--bright-blue);
+        box-shadow: 0 4px 16px rgba(0,20,137,0.10);
+        padding: 18px 16px 14px;
+        text-align: center;
+        min-height: 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease, opacity 0.25s ease;
+    }
+
+    @keyframes bounceIn {
+        0%   { transform: scale(0.9) translateY(8px); opacity: 0; }
+        60%  { transform: scale(1.02) translateY(-2px); opacity: 1; }
+        100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    .card.bounce-in { animation: bounceIn 0.35s cubic-bezier(.34,1.56,.64,1) both; }
+    .card.fly-out-correct { transform: translateX(110px) rotate(6deg);  opacity: 0; }
+    .card.fly-out-wrong   { transform: translateX(-110px) rotate(-6deg); opacity: 0; }
+
+    .card-counter {
+        font-size: clamp(0.6rem, 2vw, 0.68rem);
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--bright-blue);
+        margin-bottom: 8px;
+        opacity: 0.75;
+    }
+    .card-text {
+        font-size: clamp(0.82rem, 3vw, 0.95rem);
+        font-weight: 600;
+        color: var(--primary);
+        line-height: 1.55;
+    }
+
+    /* ── FEEDBACK ── */
+    .card-feedback { display: none; margin-top: 12px; width: 100%; }
+    .card-feedback.visible { display: block; }
+
+    .fb-pill {
+        display: inline-block;
+        font-size: clamp(0.72rem, 2.5vw, 0.82rem);
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 20px;
+    }
+    .fb-pill.correct { background: var(--lime);  color: var(--primary); }
+    .fb-pill.wrong   { background: var(--red);   color: var(--white); }
+
+    .fb-reason {
+        display: none;
+        margin-top: 9px;
+        font-size: clamp(0.72rem, 2.5vw, 0.8rem);
+        font-style: italic;
+        color: var(--primary);
+        line-height: 1.5;
+        background: #f0f3f9;
+        border-left: 3px solid var(--bright-blue);
+        border-radius: 0 8px 8px 0;
+        padding: 8px 12px;
+        text-align: left;
+    }
+    .fb-reason.visible { display: block; }
+
+    /* ── SANCTION BUTTONS ── */
+    .sanction-label {
+        font-size: clamp(0.62rem, 2vw, 0.7rem);
+        font-weight: 700;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--primary);
+        text-align: center;
+        margin-bottom: 10px;
+        opacity: 0.5;
+    }
+
+    .sanction-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .sanction-btn {
+        border: 2px solid transparent;
+        border-radius: 8px;
+        padding: 11px 12px;
+        font-family: 'Century Gothic','CenturyGothic','Trebuchet MS',Arial,sans-serif;
+        font-size: clamp(0.68rem, 2.2vw, 0.78rem);
+        font-weight: 600;
+        color: var(--primary);
+        background: var(--white);
+        cursor: pointer;
+        text-align: left;
+        line-height: 1.4;
+        transition: transform 0.12s, border-color 0.15s, background 0.15s;
+        box-shadow: 0 2px 8px rgba(0,20,137,0.08);
+        border-left: 4px solid var(--bright-blue);
+    }
+    .sanction-btn:hover  { border-color: var(--bright-blue); background: #f0f3f9; }
+    .sanction-btn:active { transform: scale(0.97); }
+    .sanction-btn.disabled { opacity: 0.38; pointer-events: none; }
+
+    .sanction-btn.flash-correct { animation: flashCorrect 0.5s ease forwards; }
+    .sanction-btn.flash-wrong   { animation: flashWrong   0.5s ease forwards; }
+
+    @keyframes flashCorrect {
+        0%   { background: var(--white); }
+        40%  { background: var(--lime); border-color: var(--lime); }
+        100% { background: var(--white); }
+    }
+    @keyframes flashWrong {
+        0%   { background: var(--white); }
+        35%  { background: #fdecea; border-color: var(--red); }
+        100% { background: var(--white); }
+    }
+
+    /* ── RESULTS ── */
+    .results-screen { display: none; padding: 4px 0 8px; }
+    .results-screen.visible { display: block; }
+
+    .result-hero {
+        background: var(--primary);
+        border-radius: 10px;
+        padding: 24px 20px;
+        margin-bottom: 12px;
+        text-align: center;
+        border-bottom: 4px solid var(--lime);
+    }
+    .result-emoji { font-size: 38px; margin-bottom: 8px; }
+    .result-score {
+        font-size: clamp(2.4rem, 10vw, 3.2rem);
+        font-weight: 800;
+        color: var(--lime);
+        line-height: 1;
+    }
+    .result-denom {
+        font-size: clamp(0.7rem, 2.2vw, 0.78rem);
+        color: var(--white);
+        opacity: 0.6;
+        margin-top: 3px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+    .result-msg {
+        font-size: clamp(0.78rem, 2.8vw, 0.88rem);
+        font-style: italic;
+        margin-top: 12px;
+        line-height: 1.6;
+        color: var(--white);
+        opacity: 0.9;
+    }
+
+    .game-area.hidden { display: none; }
+
+    /* ── FOOTER ── */
+    .footer {
+        padding: 14px 16px;
+        border-top: 1px solid #e4e8f5;
+        background: #fafbff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .asterisk-note {
+        font-size: clamp(0.65rem, 2.2vw, 0.72rem);
+        font-style: italic;
+        color: var(--primary);
+        flex: 1;
+        min-width: 180px;
+    }
+
+    .btn {
+        color: var(--white);
+        border: none;
+        padding: 11px 22px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 700;
+        font-family: 'Century Gothic','CenturyGothic','Trebuchet MS',Arial,sans-serif;
+        transition: opacity 0.2s, transform 0.1s;
+        text-transform: uppercase;
+        font-size: clamp(0.72rem, 2.5vw, 0.82rem);
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn:hover  { opacity: 0.88; }
+    .btn-reset  { background: var(--lime); color: var(--primary); display: none; }
+
+    @media (max-width: 480px) {
+        .sanction-grid { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+<body>
+
+<div class="main-card">
+
+    <div class="progress-wrap">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <div class="game-body">
+        <h3 class="stage-title">Tap the correct sanction</h3>
+        <p class="instructions">
+            <strong>Instructions:</strong> Read each irregularity and tap the sanction that would apply. You will receive immediate feedback after each answer.
+        </p>
+
+        <!-- Game area -->
+        <div class="game-area" id="game-area">
+            <div class="card-wrap">
+                <div class="card" id="card">
+                    <p class="card-counter" id="card-counter">Irregularity 1 of 5</p>
+                    <p class="card-text"    id="card-text"></p>
+                    <div class="card-feedback" id="card-feedback">
+                        <span class="fb-pill"   id="fb-pill"></span>
+                        <div  class="fb-reason" id="fb-reason"></div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="sanction-label">Select the correct sanction</p>
+            <div class="sanction-grid" id="sanction-grid"></div>
+        </div>
+
+        <!-- Results -->
+        <div class="results-screen" id="results-screen">
+            <div class="result-hero">
+                <div class="result-emoji" id="result-emoji"></div>
+                <div class="result-score" id="result-score"></div>
+                <div class="result-denom" id="result-denom">out of 5</div>
+                <p class="result-msg"    id="result-msg"></p>
+            </div>
+        </div>
+
+    </div><!-- /game-body -->
+
+    <div class="footer">
+        <p class="asterisk-note">* Examination barring refers to the number of examination sessions the candidate is prohibited from writing that subject.</p>
+        <button class="btn btn-reset" id="reset-btn" onclick="restart()">↩ Start Over</button>
+    </div>
+
+</div><!-- /main-card -->
+
+<script>
+const SANCTIONS = [
+    { id:'a', text:'Disciplinary action against school officials' },
+    { id:'b', text:'Subject result declared null and void + disciplinary action against school officials' },
+    { id:'c', text:'Subject result declared null and void + barring from 1–3 examinations*' },
+    { id:'d', text:'Subject result declared null and void + barring from 0–3 examinations*' },
+];
+
+const ITEMS = [
+    {
+        text:    'Late receipt of answer scripts or answer scripts not placed in the batch.',
+        answer:  'a',
+        correct: 'Correct! Late receipt of scripts is an administrative failure — disciplinary action is taken against school officials.',
+        wrong:   'Not quite. This is an administrative failure by school officials, so the sanction is disciplinary action against them only.'
+    },
+    {
+        text:    'The incorrect question paper was written.',
+        answer:  'a',
+        correct: 'Correct! Writing the wrong paper is an administrative error — disciplinary action is taken against school officials.',
+        wrong:   'Not quite. Writing the incorrect paper is an administrative error — the sanction is disciplinary action against school officials only.'
+    },
+    {
+        text:    'The answer script was removed from the examination venue.',
+        answer:  'b',
+        correct: 'Correct! Removing a script from the venue is serious — the result is declared null and void and disciplinary action follows.',
+        wrong:   'Not quite. Removing a script results in the subject result being declared null and void, plus disciplinary action against school officials.'
+    },
+    {
+        text:    'Crib notes, notes on a cell phone, or the use of a cell phone inside the examination venue are discovered.',
+        answer:  'c',
+        correct: 'Correct! Using or possessing notes or cell phone content means the result is null and void and the candidate is barred from 1–3 examinations.',
+        wrong:   'Not quite. Crib notes or cell phone use results in the subject being declared null and void and barring from 1–3 examinations.'
+    },
+    {
+        text:    'The possession of a cell phone was discovered in the examination venue.',
+        answer:  'd',
+        correct: 'Correct! Mere possession of a cell phone results in the subject being declared null and void and barring from 0–3 examinations.',
+        wrong:   'Not quite. Possession of a cell phone results in the subject being declared null and void and barring from 0–3 examinations.'
+    },
+];
+
+let current  = 0;
+let correct  = 0;
+let answered = false;
+
+function renderButtons() {
+    const grid = document.getElementById('sanction-grid');
+    grid.innerHTML = '';
+    // Always show sanctions in fixed order (a-d) — no shuffle,
+    // so the learner can spot patterns across questions
+    SANCTIONS.forEach(s => {
+        const btn = document.createElement('button');
+        btn.className      = 'sanction-btn';
+        btn.dataset.id     = s.id;
+        btn.textContent    = s.text;
+        btn.addEventListener('click', () => answer(s.id));
+        grid.appendChild(btn);
+    });
+}
+
+function showCard() {
+    answered = false;
+    const item = ITEMS[current];
+
+    document.getElementById('card-counter').textContent = `Irregularity ${current + 1} of ${ITEMS.length}`;
+    document.getElementById('card-text').textContent    = item.text;
+
+    const fb     = document.getElementById('card-feedback');
+    const pill   = document.getElementById('fb-pill');
+    const reason = document.getElementById('fb-reason');
+    fb.classList.remove('visible');
+    pill.className   = 'fb-pill';
+    pill.textContent = '';
+    reason.classList.remove('visible');
+    reason.textContent = '';
+
+    const card = document.getElementById('card');
+    card.classList.remove('fly-out-correct','fly-out-wrong','bounce-in');
+    card.style.transform = '';
+    card.style.opacity   = '';
+    requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add('bounce-in')));
+
+    renderButtons();
+    updateProgress();
+}
+
+function answer(chosen) {
+    if (answered) return;
+    answered = true;
+    disableBtns();
+
+    const item      = ITEMS[current];
+    const isCorrect = chosen === item.answer;
+
+    const btn = document.querySelector(`.sanction-btn[data-id="${chosen}"]`);
+    if (btn) {
+        btn.classList.add(isCorrect ? 'flash-correct' : 'flash-wrong');
+        setTimeout(() => btn.classList.remove('flash-correct','flash-wrong'), 550);
+    }
+
+    const pill   = document.getElementById('fb-pill');
+    const reason = document.getElementById('fb-reason');
+    const fb     = document.getElementById('card-feedback');
+
+    if (isCorrect) {
+        pill.textContent = '✓ Correct!';
+        pill.className   = 'fb-pill correct';
+        correct++;
+    } else {
+        pill.textContent   = '✗ Not quite.';
+        pill.className     = 'fb-pill wrong';
+        reason.textContent = item.wrong;
+        reason.classList.add('visible');
+    }
+    fb.classList.add('visible');
+
+    const pause = isCorrect ? 1000 : 4000;
+    const card  = document.getElementById('card');
+
+    setTimeout(() => {
+        card.classList.remove('bounce-in');
+        card.classList.add(isCorrect ? 'fly-out-correct' : 'fly-out-wrong');
+        setTimeout(() => {
+            current++;
+            if (current < ITEMS.length) showCard();
+            else showResults();
+        }, 300);
+    }, pause);
+}
+
+function updateProgress() {
+    document.getElementById('progress-fill').style.width = ((current / ITEMS.length) * 100) + '%';
+}
+
+function disableBtns() {
+    document.querySelectorAll('.sanction-btn').forEach(b => b.classList.add('disabled'));
+}
+
+function showResults() {
+    document.getElementById('progress-fill').style.width = '100%';
+    document.getElementById('game-area').classList.add('hidden');
+    document.getElementById('reset-btn').style.display = 'inline-block';
+
+    let emoji, msg;
+    if (correct === 5)      { emoji = '🏆'; msg = 'Outstanding! You matched every sanction correctly.'; }
+    else if (correct >= 3)  { emoji = '👍'; msg = 'Good effort — review the feedback above and give it another go.'; }
+    else                    { emoji = '📚'; msg = 'Keep at it — read the feedback carefully and try again.'; }
+
+    document.getElementById('result-emoji').textContent = emoji;
+    document.getElementById('result-score').textContent = correct;
+    document.getElementById('result-denom').textContent = `out of ${ITEMS.length}`;
+    document.getElementById('result-msg').textContent   = msg;
+    document.getElementById('results-screen').classList.add('visible');
+}
+
+function restart() {
+    current  = 0;
+    correct  = 0;
+    answered = false;
+    document.getElementById('results-screen').classList.remove('visible');
+    document.getElementById('game-area').classList.remove('hidden');
+    document.getElementById('reset-btn').style.display = 'none';
+    showCard();
+}
+
+showCard();
+</script>
+</body>
+</html>
