@@ -119,6 +119,20 @@
         color: rgba(255,255,255,0.75);
         margin-bottom: 8px;
     }
+
+    /* ── ICON ── */
+    .card-icon {
+        margin: 4px 0 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .card-icon svg {
+        width: 54px;
+        height: 54px;
+        filter: drop-shadow(0 2px 5px rgba(0,0,0,0.22));
+    }
+
     .card-text {
         font-size: clamp(0.82rem, 3vw, 0.95rem);
         font-weight: 600;
@@ -312,6 +326,7 @@
             <div class="card-wrap">
                 <div class="card" id="card">
                     <p class="card-counter" id="card-counter">Irregularity 1 of 5</p>
+                    <div class="card-icon" id="card-icon"></div>
                     <p class="card-text"    id="card-text"></p>
                     <div class="card-feedback" id="card-feedback">
                         <span class="fb-pill"   id="fb-pill"></span>
@@ -338,7 +353,7 @@
 
     <div class="footer">
         <p class="asterisk-note">* Examination barring refers to the number of examination sessions the candidate is prohibited from writing that subject.</p>
-        <button class="btn btn-reset" id="reset-btn" onclick="restart()">↩ Start Over</button>
+        <button class="btn btn-reset" id="reset-btn" onclick="restart()">&#8617; Start Over</button>
     </div>
 
 </div><!-- /main-card -->
@@ -347,52 +362,134 @@
 const SANCTIONS = [
     { id:'a', text:'Disciplinary action against school officials' },
     { id:'b', text:'Subject result declared null and void + disciplinary action against school officials' },
-    { id:'c', text:'Subject result declared null and void + barring from 1–3 examinations*' },
-    { id:'d', text:'Subject result declared null and void + barring from 0–3 examinations*' },
+    { id:'c', text:'Subject result declared null and void + barring from 1\u20133 examinations*' },
+    { id:'d', text:'Subject result declared null and void + barring from 0\u20133 examinations*' },
 ];
+
+// ── SVG ICONS ─────────────────────────────────────────────────────────────────
+// Each icon sits on the bright-blue card. White strokes; lime or red accents.
+
+const ICON_LATE_SCRIPTS = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" fill="none" aria-hidden="true">
+  <!-- Document body -->
+  <rect x="4" y="4" width="28" height="36" rx="3" stroke="white" stroke-width="2.2" fill="rgba(255,255,255,0.08)"/>
+  <line x1="10" y1="14" x2="26" y2="14" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="10" y1="20" x2="26" y2="20" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="10" y1="26" x2="20" y2="26" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Clock badge -->
+  <circle cx="37" cy="37" r="13" fill="#001489" stroke="white" stroke-width="2.2"/>
+  <line x1="37" y1="30" x2="37" y2="37" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  <line x1="37" y1="37" x2="43" y2="37" stroke="#C4D600" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="37" cy="37" r="1.8" fill="white"/>
+</svg>`;
+
+const ICON_WRONG_PAPER = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" fill="none" aria-hidden="true">
+  <!-- Document body -->
+  <rect x="4" y="4" width="28" height="36" rx="3" stroke="white" stroke-width="2.2" fill="rgba(255,255,255,0.08)"/>
+  <line x1="10" y1="14" x2="26" y2="14" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="10" y1="20" x2="26" y2="20" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="10" y1="26" x2="20" y2="26" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Error badge -->
+  <circle cx="37" cy="37" r="13" fill="#D73828" stroke="white" stroke-width="2.2"/>
+  <line x1="31" y1="31" x2="43" y2="43" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="43" y1="31" x2="31" y2="43" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+</svg>`;
+
+const ICON_REMOVED = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" fill="none" aria-hidden="true">
+  <!-- Document body -->
+  <rect x="4" y="4" width="28" height="36" rx="3" stroke="white" stroke-width="2.2" fill="rgba(255,255,255,0.08)"/>
+  <line x1="10" y1="14" x2="26" y2="14" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="10" y1="20" x2="26" y2="20" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="10" y1="26" x2="20" y2="26" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Exit arrow in lime -->
+  <line x1="28" y1="36" x2="50" y2="36" stroke="#C4D600" stroke-width="2.5" stroke-linecap="round"/>
+  <polyline points="43,29 50,36 43,43" stroke="#C4D600" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>`;
+
+const ICON_PHONE_USE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" fill="none" aria-hidden="true">
+  <!-- Phone outline -->
+  <rect x="14" y="3" width="24" height="40" rx="4" stroke="white" stroke-width="2.2" fill="rgba(255,255,255,0.08)"/>
+  <!-- Screen with note lines (active use) -->
+  <rect x="18" y="9" width="16" height="22" rx="2" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+  <line x1="21" y1="14" x2="31" y2="14" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="21" y1="18" x2="31" y2="18" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="21" y1="22" x2="28" y2="22" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="26" cy="37" r="2.2" fill="rgba(255,255,255,0.7)"/>
+  <!-- Warning triangle badge -->
+  <path d="M37 32 L46 48 L28 48 Z" fill="#D73828" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+  <line x1="37" y1="37" x2="37" y2="42" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="37" cy="45.5" r="1.3" fill="white"/>
+</svg>`;
+
+const ICON_PHONE_POSSESS = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" fill="none" aria-hidden="true">
+  <!-- Phone outline -->
+  <rect x="13" y="4" width="24" height="40" rx="4" stroke="white" stroke-width="2.2" fill="rgba(255,255,255,0.08)"/>
+  <line x1="19" y1="10" x2="31" y2="10" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="25" cy="37" r="2.5" fill="rgba(255,255,255,0.7)"/>
+  <!-- Prohibition ring -->
+  <circle cx="25" cy="24" r="16" fill="rgba(215,56,40,0.18)" stroke="#D73828" stroke-width="2.8"/>
+  <!-- Diagonal slash -->
+  <line x1="14" y1="35" x2="36" y2="13" stroke="#D73828" stroke-width="2.8" stroke-linecap="round"/>
+</svg>`;
+
+// ── ITEMS ──────────────────────────────────────────────────────────────────────
 
 const ITEMS = [
     {
         text:    'Late receipt of answer scripts or answer scripts not placed in the batch.',
         answer:  'a',
         correct: 'Correct! Late receipt of scripts is an administrative failure — disciplinary action is taken against school officials.',
-        wrong:   'Not quite. This is an administrative failure by school officials, so the sanction is disciplinary action against them only.'
+        wrong:   'Not quite. This is an administrative failure by school officials, so the sanction is disciplinary action against them only.',
+        icon:    ICON_LATE_SCRIPTS
     },
     {
         text:    'The incorrect question paper was written.',
         answer:  'a',
         correct: 'Correct! Writing the wrong paper is an administrative error — disciplinary action is taken against school officials.',
-        wrong:   'Not quite. Writing the incorrect paper is an administrative error — the sanction is disciplinary action against school officials only.'
+        wrong:   'Not quite. Writing the incorrect paper is an administrative error — the sanction is disciplinary action against school officials only.',
+        icon:    ICON_WRONG_PAPER
     },
     {
         text:    'The answer script was removed from the examination venue.',
         answer:  'b',
         correct: 'Correct! Removing a script from the venue is serious — the result is declared null and void and disciplinary action follows.',
-        wrong:   'Not quite. Removing a script results in the subject result being declared null and void, plus disciplinary action against school officials.'
+        wrong:   'Not quite. Removing a script results in the subject result being declared null and void, plus disciplinary action against school officials.',
+        icon:    ICON_REMOVED
     },
     {
         text:    'Crib notes, notes on a cell phone, or the use of a cell phone inside the examination venue are discovered.',
         answer:  'c',
-        correct: 'Correct! Using or possessing notes or cell phone content means the result is null and void and the candidate is barred from 1–3 examinations.',
-        wrong:   'Not quite. Crib notes or cell phone use results in the subject being declared null and void and barring from 1–3 examinations.'
+        correct: 'Correct! Using or possessing notes or cell phone content means the result is null and void and the candidate is barred from 1\u20133 examinations.',
+        wrong:   'Not quite. Crib notes or cell phone use results in the subject being declared null and void and barring from 1\u20133 examinations.',
+        icon:    ICON_PHONE_USE
     },
     {
         text:    'The possession of a cell phone was discovered in the examination venue.',
         answer:  'd',
-        correct: 'Correct! Mere possession of a cell phone results in the subject being declared null and void and barring from 0–3 examinations.',
-        wrong:   'Not quite. Possession of a cell phone results in the subject being declared null and void and barring from 0–3 examinations.'
+        correct: 'Correct! Mere possession of a cell phone results in the subject being declared null and void and barring from 0\u20133 examinations.',
+        wrong:   'Not quite. Possession of a cell phone results in the subject being declared null and void and barring from 0\u20133 examinations.',
+        icon:    ICON_PHONE_POSSESS
     },
 ];
 
-let current  = 0;
+let queue    = [];
 let correct  = 0;
 let answered = false;
+
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function initQueue() {
+    queue = shuffle(ITEMS.map((_, i) => i));
+}
 
 function renderButtons() {
     const grid = document.getElementById('sanction-grid');
     grid.innerHTML = '';
-    // Always show sanctions in fixed order (a-d) — no shuffle,
-    // so the learner can spot patterns across questions
     SANCTIONS.forEach(s => {
         const btn = document.createElement('button');
         btn.className      = 'sanction-btn';
@@ -405,10 +502,11 @@ function renderButtons() {
 
 function showCard() {
     answered = false;
-    const item = ITEMS[current];
+    const item = ITEMS[queue[0]];
 
-    document.getElementById('card-counter').textContent = `Irregularity ${current + 1} of ${ITEMS.length}`;
-    document.getElementById('card-text').textContent    = item.text;
+    document.getElementById('card-counter').textContent  = 'Irregularity ' + (correct + 1) + ' of ' + ITEMS.length;
+    document.getElementById('card-text').textContent     = item.text;
+    document.getElementById('card-icon').innerHTML       = item.icon;
 
     const fb     = document.getElementById('card-feedback');
     const pill   = document.getElementById('fb-pill');
@@ -434,10 +532,10 @@ function answer(chosen) {
     answered = true;
     disableBtns();
 
-    const item      = ITEMS[current];
+    const item      = ITEMS[queue[0]];
     const isCorrect = chosen === item.answer;
 
-    const btn = document.querySelector(`.sanction-btn[data-id="${chosen}"]`);
+    const btn = document.querySelector('.sanction-btn[data-id="' + chosen + '"]');
     if (btn) {
         btn.classList.add(isCorrect ? 'flash-correct' : 'flash-wrong');
         setTimeout(() => btn.classList.remove('flash-correct','flash-wrong'), 550);
@@ -448,14 +546,17 @@ function answer(chosen) {
     const fb     = document.getElementById('card-feedback');
 
     if (isCorrect) {
-        pill.textContent = '✓ Correct!';
+        pill.textContent = '\u2713 Correct!';
         pill.className   = 'fb-pill correct';
+        queue.shift();
         correct++;
     } else {
-        pill.textContent   = '✗ Not quite.';
+        pill.textContent   = '\u2717 Not quite.';
         pill.className     = 'fb-pill wrong';
         reason.textContent = item.wrong;
         reason.classList.add('visible');
+        const idx = queue.shift();
+        queue.push(idx);
     }
     fb.classList.add('visible');
 
@@ -466,15 +567,14 @@ function answer(chosen) {
         card.classList.remove('bounce-in');
         card.classList.add(isCorrect ? 'fly-out-correct' : 'fly-out-wrong');
         setTimeout(() => {
-            current++;
-            if (current < ITEMS.length) showCard();
+            if (queue.length > 0) showCard();
             else showResults();
         }, 300);
     }, pause);
 }
 
 function updateProgress() {
-    document.getElementById('progress-fill').style.width = ((current / ITEMS.length) * 100) + '%';
+    document.getElementById('progress-fill').style.width = ((correct / ITEMS.length) * 100) + '%';
 }
 
 function disableBtns() {
@@ -486,28 +586,24 @@ function showResults() {
     document.getElementById('game-area').classList.add('hidden');
     document.getElementById('reset-btn').style.display = 'inline-block';
 
-    let emoji, msg;
-    if (correct === 5)      { emoji = '🏆'; msg = 'Outstanding! You matched every sanction correctly.'; }
-    else if (correct >= 3)  { emoji = '👍'; msg = 'Good effort — review the feedback above and give it another go.'; }
-    else                    { emoji = '📚'; msg = 'Keep at it — read the feedback carefully and try again.'; }
-
-    document.getElementById('result-emoji').textContent = emoji;
+    document.getElementById('result-emoji').textContent = '\uD83C\uDFC6';
     document.getElementById('result-score').textContent = correct;
-    document.getElementById('result-denom').textContent = `out of ${ITEMS.length}`;
-    document.getElementById('result-msg').textContent   = msg;
+    document.getElementById('result-denom').textContent = 'out of ' + ITEMS.length;
+    document.getElementById('result-msg').textContent   = 'Well done! You matched all five sanctions correctly.';
     document.getElementById('results-screen').classList.add('visible');
 }
 
 function restart() {
-    current  = 0;
     correct  = 0;
     answered = false;
+    initQueue();
     document.getElementById('results-screen').classList.remove('visible');
     document.getElementById('game-area').classList.remove('hidden');
     document.getElementById('reset-btn').style.display = 'none';
     showCard();
 }
 
+initQueue();
 showCard();
 </script>
 </body>
