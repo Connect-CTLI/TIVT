@@ -24,7 +24,6 @@
     font-family: var(--font-body);
     background: var(--bg);
     color: var(--primary);
-    padding-bottom: 16px;
   }
 
   /* ── Header ── */
@@ -86,7 +85,7 @@
   .dot-remain  { background: rgba(255,255,255,0.35); }
 
   /* ── Container ── */
-  .container { max-width: 560px; margin: 0 auto; padding: 10px 16px 0; }
+  .container { max-width: 560px; margin: 0 auto; padding: 10px 16px 6px; }
 
   /* ── Definitions reminder strip ── */
   .defs-strip {
@@ -652,6 +651,18 @@ function restart() {
 }
 
 init();
+
+/* ── Report actual content height to a hosting iframe (e.g. Moodle) ──── */
+/* If the page is embedded in an iframe with a fixed height, this lets   */
+/* a listening parent resize the frame to fit, removing the gap below.  */
+function reportHeight() {
+  const h = document.documentElement.scrollHeight;
+  if (window.parent && window.parent !== window) {
+    window.parent.postMessage({ type: 'resize-iframe', height: h }, '*');
+  }
+}
+window.addEventListener('load', reportHeight);
+new ResizeObserver(reportHeight).observe(document.body);
 </script>
 </body>
 </html>
