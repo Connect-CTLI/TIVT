@@ -1,490 +1,469 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-ZA">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Irregularity or Incident? · Tap to Categorise</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Irregularity or Incident? Categorisation Activity</title>
 <style>
-  :root {
-    --primary: #001489;
-    --red:     #D73828;
-    --blue:    #007DBA;
-    --lime:    #C4D600;
-    --yellow:  #FFC600;
-    --white:   #FFFFFF;
-    --bg:      #ffffff;
-    --font-body:    'Century Gothic', 'CenturyGothic', sans-serif;
-    --font-display: 'Gotham', 'Century Gothic', 'CenturyGothic', sans-serif;
-  }
+    :root {
+        --primary: #001489;
+        --lime:    #C4D600;
+        --blue:    #007DBA;
+        --red:     #D73828;
+        --yellow:  #FFC600;
+        --white:   #ffffff;
+        --bg:      #f0f3f9;
+        --font-body:    'Century Gothic', 'CenturyGothic', sans-serif;
+        --font-display: 'Gotham', 'Century Gothic', 'CenturyGothic', sans-serif;
+    }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; }
 
-  body {
-    font-family: var(--font-body);
-    background: var(--bg);
-    color: var(--primary);
-  }
+    body {
+        font-family: var(--font-body);
+        background: var(--bg);
+        margin: 0;
+        padding: 12px;
+        color: var(--primary);
+        display: flex;
+        justify-content: center;
+    }
 
-  /* ── Header ── */
-  .act-header {
-    background: var(--primary);
-    padding: 22px 20px 16px;
-    text-align: center;
-  }
-  .eyebrow {
-    font-family: var(--font-display);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--yellow);
-    margin-bottom: 8px;
-  }
-  .act-header h1 {
-    font-family: var(--font-display);
-    font-size: clamp(15px, 4.2vw, 20px);
-    font-weight: 800;
-    font-style: italic;
-    line-height: 1.25;
-    color: var(--white);
-  }
+    .main-card {
+        width: 100%;
+        max-width: 960px;
+        background: var(--white);
+        border-radius: 14px;
+        box-shadow: 0 8px 32px rgba(0,20,137,0.13);
+        overflow: hidden;
+        border: 1px solid #dde3f5;
+    }
 
-  /* ── Progress bar ── */
-  .progress-wrap { background: var(--primary); height: 6px; border-top: 1px solid rgba(255,255,255,0.1); }
-  .progress-fill {
-    height: 6px;
-    background: var(--yellow);
-    transition: width 0.45s ease;
-    width: 0%;
-  }
+    /* Header */
+    .header {
+        background: var(--primary);
+        color: var(--white);
+        padding: 22px 20px 18px;
+        text-align: center;
+        border-bottom: 5px solid var(--lime);
+    }
+    .eyebrow {
+        font-family: var(--font-display);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--yellow);
+        margin-bottom: 6px;
+    }
+    .header h2 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-style: italic;
+        font-size: clamp(1rem, 4vw, 1.35rem);
+    }
 
-  /* ── Score strip ── */
-  .score-strip {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    background: var(--primary);
-    padding: 6px 20px 16px;
-    flex-wrap: wrap;
-  }
-  .score-pill {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-family: var(--font-display);
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--white);
-    letter-spacing: 0.5px;
-  }
-  .score-pill .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .dot-correct { background: var(--lime); }
-  .dot-wrong   { background: var(--red); }
-  .dot-remain  { background: rgba(255,255,255,0.35); }
+    /* Progress strip */
+    .progress-wrap { background: #f8f9fb; border-bottom: 1px solid #e4e8f5; padding: 10px 16px; }
+    .progress-track { height: 6px; background: #e4e8f5; border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
+    .progress-fill  { height: 6px; background: var(--blue); width: 0%; transition: width 0.45s ease; }
+    .score-strip {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+    }
+    .score-pill {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--font-display);
+        font-size: 11.5px;
+        font-weight: 700;
+        color: var(--primary);
+        letter-spacing: 0.3px;
+    }
+    .score-pill .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .dot-correct { background: var(--lime); }
+    .dot-wrong   { background: var(--red); }
+    .dot-remain  { background: #A6BBC8; }
 
-  /* ── Container ── */
-  .container { max-width: 900px; margin: 0 auto; padding: 10px 24px 6px; }
+    /* Body */
+    .game-body { padding: 20px 16px 10px; min-height: 300px; }
 
-  /* ── Wide layout: widen the card and button row, definitions stay on top ── */
-  @media (min-width: 760px) {
-    .def-card { padding: 14px 16px; }
-    .def-card .def-text { font-size: 13px; }
-    .card { padding: 32px 36px 28px; min-height: 160px; }
-    .card-text { font-size: 19px; }
-    .cat-btn { padding: 18px 18px; font-size: 14.5px; }
-  }
+    .instructions {
+        font-size: clamp(0.78rem, 2.8vw, 0.88rem);
+        color: var(--primary);
+        margin: 0 0 14px;
+        line-height: 1.5;
+        text-align: center;
+    }
 
-  /* ── Definitions reminder strip ── */
-  .defs-strip {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-  .def-card {
-    border-radius: 10px;
-    padding: 8px 10px;
-    background: rgba(0,20,137,0.05);
-    border-left: 4px solid var(--blue);
-  }
-  .def-card.def-incident { border-left-color: var(--yellow); }
-  .def-card .def-label {
-    font-family: var(--font-display);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--primary);
-    margin-bottom: 4px;
-  }
-  .def-card .def-text {
-    font-size: 11px;
-    line-height: 1.4;
-    color: var(--primary);
-    opacity: 0.85;
-  }
+    .defs-strip {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+    .def-card {
+        border-radius: 10px;
+        padding: 10px 12px;
+        background: var(--bg);
+        border-left: 4px solid var(--blue);
+    }
+    .def-card.def-incident { border-left-color: var(--yellow); }
+    .def-card .def-label {
+        font-family: var(--font-display);
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--primary);
+        margin-bottom: 4px;
+    }
+    .def-card .def-text {
+        font-size: 11.5px;
+        line-height: 1.4;
+        color: var(--primary);
+        opacity: 0.85;
+    }
 
-  /* ── Card ── */
-  .card-wrap { margin-bottom: 12px; }
+    .card-wrap { margin-bottom: 16px; }
 
-  .card {
-    background: var(--white);
-    border-radius: 14px;
-    border-top: 5px solid var(--blue);
-    box-shadow: 0 4px 20px rgba(0,20,137,0.12);
-    padding: 16px 20px 14px;
-    text-align: center;
-    min-height: 96px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.32s ease, opacity 0.28s ease;
-  }
+    .card {
+        background: var(--white);
+        border: 2px solid #dde3f5;
+        border-radius: 10px;
+        box-shadow: inset 0 2px 8px rgba(0,0,0,0.04);
+        padding: 22px 24px 20px;
+        text-align: center;
+        min-height: 110px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.32s ease, opacity 0.28s ease;
+    }
 
-  @keyframes bounceIn {
-    0%   { transform: scale(0.88) translateY(10px); opacity: 0; }
-    60%  { transform: scale(1.03) translateY(-3px); opacity: 1; }
-    100% { transform: scale(1)    translateY(0);    opacity: 1; }
-  }
-  .card.bounce-in { animation: bounceIn 0.38s cubic-bezier(.34,1.56,.64,1) both; }
+    @keyframes bounceIn {
+        0%   { transform: scale(0.92) translateY(8px); opacity: 0; }
+        60%  { transform: scale(1.02) translateY(-2px); opacity: 1; }
+        100% { transform: scale(1)    translateY(0);    opacity: 1; }
+    }
+    .card.bounce-in { animation: bounceIn 0.36s cubic-bezier(.34,1.56,.64,1) both; }
 
-  .card.fly-out-correct { transform: translateX(120px) rotate(7deg);  opacity: 0; }
-  .card.fly-out-wrong   { transform: translateX(-120px) rotate(-7deg); opacity: 0; }
+    .card.fly-out-correct { transform: translateX(100px) rotate(5deg);  opacity: 0; }
+    .card.fly-out-wrong   { transform: translateX(-100px) rotate(-5deg); opacity: 0; }
 
-  .card-counter {
-    font-family: var(--font-display);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--blue);
-    margin-bottom: 8px;
-    opacity: 0.7;
-  }
-  .card-text {
-    font-family: var(--font-body);
-    font-size: clamp(14px, 3.6vw, 16px);
-    font-weight: 600;
-    color: var(--primary);
-    line-height: 1.55;
-  }
+    .card-counter {
+        font-family: var(--font-display);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--blue);
+        margin-bottom: 8px;
+        opacity: 0.75;
+    }
+    .card-text {
+        font-family: var(--font-body);
+        font-size: clamp(0.85rem, 2.6vw, 1.05rem);
+        font-weight: 600;
+        color: var(--primary);
+        line-height: 1.5;
+    }
 
-  /* ── Feedback block ── */
-  .card-feedback { display: none; margin-top: 14px; width: 100%; }
-  .card-feedback.visible { display: block; }
+    .retry-banner {
+        font-family: var(--font-display);
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--blue);
+        text-align: center;
+        margin-bottom: 8px;
+        letter-spacing: 0.4px;
+    }
 
-  .fb-pill {
-    display: inline-block;
-    font-family: var(--font-display);
-    font-size: 12.5px;
-    font-weight: 700;
-    padding: 7px 16px;
-    border-radius: 20px;
-    margin-bottom: 0;
-  }
-  .fb-pill.correct { background: var(--lime);    color: var(--primary); }
-  .fb-pill.wrong   { background: var(--red);     color: var(--white); }
+    .card-feedback { display: none; margin-top: 14px; width: 100%; }
+    .card-feedback.visible { display: block; }
 
-  .fb-reason {
-    display: none;
-    margin-top: 10px;
-    font-family: var(--font-body);
-    font-size: 12.5px;
-    font-style: italic;
-    color: var(--primary);
-    line-height: 1.5;
-    background: rgba(0,20,137,0.06);
-    border-left: 3px solid var(--blue);
-    border-radius: 0 8px 8px 0;
-    padding: 8px 12px;
-    text-align: left;
-  }
-  .fb-reason.visible { display: block; }
+    .fb-pill {
+        display: inline-block;
+        font-family: var(--font-display);
+        font-size: 12px;
+        font-weight: 700;
+        padding: 6px 16px;
+        border-radius: 20px;
+    }
+    .fb-pill.correct { background: var(--lime); color: var(--primary); }
+    .fb-pill.wrong   { background: var(--red);  color: var(--white); }
 
-  /* ── Category buttons ── */
-  .cat-label {
-    font-family: var(--font-display);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--primary);
-    text-align: center;
-    margin-bottom: 11px;
-    opacity: 0.5;
-  }
-  .cat-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-  .cat-btn {
-    border: none;
-    border-radius: 10px;
-    padding: 13px 12px;
-    font-family: var(--font-display);
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--white);
-    cursor: pointer;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    line-height: 1.35;
-    transition: transform 0.12s, opacity 0.2s;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-  }
-  .cat-btn:active { transform: scale(0.96); }
-  .cat-btn.disabled { opacity: 0.38; pointer-events: none; }
+    .fb-reason {
+        display: none;
+        margin-top: 10px;
+        font-family: var(--font-body);
+        font-size: 12px;
+        font-style: italic;
+        color: var(--primary);
+        line-height: 1.5;
+        background: var(--bg);
+        border-left: 3px solid var(--blue);
+        border-radius: 0 8px 8px 0;
+        padding: 8px 12px;
+        text-align: left;
+    }
+    .fb-reason.visible { display: block; }
 
-  .cat-btn[data-cat="irregularity"] { background: var(--red); }
-  .cat-btn[data-cat="incident"]     { background: var(--blue); }
+    .cat-label {
+        font-family: var(--font-display);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--primary);
+        text-align: center;
+        margin-bottom: 10px;
+        opacity: 0.55;
+    }
+    .cat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    .cat-btn {
+        border: none;
+        border-radius: 10px;
+        padding: 16px 14px;
+        font-family: var(--font-display);
+        font-size: clamp(0.78rem, 2.6vw, 0.9rem);
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: var(--white);
+        cursor: pointer;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: opacity 0.2s, transform 0.1s;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+    }
+    .cat-btn:active { transform: scale(0.97); }
+    .cat-btn:hover  { opacity: 0.9; }
+    .cat-btn.disabled { opacity: 0.35; pointer-events: none; }
 
-  .cat-btn.flash-correct { animation: flashCorrect 0.55s ease forwards; }
-  .cat-btn.flash-wrong   { animation: flashWrong   0.55s ease forwards; }
+    .cat-btn[data-cat="irregularity"] { background: var(--red); }
+    .cat-btn[data-cat="incident"]     { background: var(--blue); }
 
-  @keyframes flashCorrect {
-    0%   { outline: 0px solid var(--lime); }
-    40%  { outline: 4px solid var(--lime); filter: brightness(1.25); }
-    100% { outline: 0px solid var(--lime); filter: brightness(1); }
-  }
-  @keyframes flashWrong {
-    0%   { filter: brightness(1); }
-    35%  { filter: brightness(0.55) grayscale(0.6); }
-    100% { filter: brightness(1); }
-  }
+    .cat-btn.flash-correct { animation: flashCorrect 0.55s ease forwards; }
+    .cat-btn.flash-wrong   { animation: flashWrong   0.55s ease forwards; }
 
-  .cat-btn .btn-icon  { font-size: 17px; flex-shrink: 0; }
-  .cat-btn .btn-label { flex: none; }
+    @keyframes flashCorrect {
+        0%   { outline: 0px solid var(--lime); }
+        40%  { outline: 4px solid var(--lime); filter: brightness(1.2); }
+        100% { outline: 0px solid var(--lime); filter: brightness(1); }
+    }
+    @keyframes flashWrong {
+        0%   { filter: brightness(1); }
+        35%  { filter: brightness(0.55) grayscale(0.6); }
+        100% { filter: brightness(1); }
+    }
 
-  /* ── Results screen ── */
-  .results-screen { display: none; text-align: center; padding: 8px 0; }
-  .results-screen.visible { display: block; }
+    .cat-btn .btn-icon  { font-size: 16px; flex-shrink: 0; }
 
-  .result-hero {
-    background: var(--primary);
-    border-radius: 14px;
-    padding: 30px 24px 26px;
-    margin-bottom: 16px;
-  }
-  .result-emoji { font-size: 46px; margin-bottom: 10px; }
-  .result-score {
-    font-family: var(--font-display);
-    font-size: 54px;
-    font-weight: 800;
-    color: var(--yellow);
-    line-height: 1;
-  }
-  .result-denom {
-    font-family: var(--font-display);
-    font-size: 13px;
-    color: var(--white);
-    opacity: 0.6;
-    margin-top: 3px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .result-msg {
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-style: italic;
-    margin-top: 14px;
-    line-height: 1.6;
-    color: var(--white);
-    opacity: 0.9;
-  }
+    .results-screen { display: none; text-align: center; padding: 6px 0 0; }
+    .results-screen.visible { display: block; }
 
-  .btn-try-again {
-    width: 100%;
-    padding: 15px;
-    background: var(--red);
-    color: var(--white);
-    border: none;
-    border-radius: 10px;
-    font-family: var(--font-display);
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    margin-top: 4px;
-  }
-  .btn-try-again:active { opacity: 0.8; }
+    .result-hero {
+        background: var(--primary);
+        border-radius: 10px;
+        padding: 26px 22px 22px;
+        margin-bottom: 4px;
+    }
+    .result-emoji { font-size: 42px; margin-bottom: 8px; }
+    .result-score {
+        font-family: var(--font-display);
+        font-size: 46px;
+        font-weight: 800;
+        color: var(--yellow);
+        line-height: 1;
+    }
+    .result-denom {
+        font-family: var(--font-display);
+        font-size: 12px;
+        color: var(--white);
+        opacity: 0.65;
+        margin-top: 4px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+    .result-msg {
+        font-family: var(--font-body);
+        font-size: 13px;
+        font-style: italic;
+        margin-top: 12px;
+        line-height: 1.6;
+        color: var(--white);
+        opacity: 0.9;
+    }
 
-  .game-area.hidden { display: none; }
+    .game-body.hidden { display: none; }
 
-  @media (max-width: 360px) {
-    .defs-strip { grid-template-columns: 1fr; }
-  }
+    .footer {
+        padding: 16px 16px;
+        border-top: 1px solid #e4e8f5;
+        background: #fafbff;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+        align-items: center;
+    }
+    .btn {
+        color: var(--white);
+        border: none;
+        padding: 12px 22px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: var(--font-display);
+        font-weight: 700;
+        transition: opacity 0.2s, transform 0.1s;
+        text-transform: uppercase;
+        font-size: clamp(0.72rem, 2.5vw, 0.82rem);
+        letter-spacing: 0.04em;
+        white-space: nowrap;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn:hover  { opacity: 0.88; }
+    .btn-reset  { background: var(--lime); color: var(--primary); }
+    #final-msg {
+        color: var(--primary);
+        font-weight: 700;
+        font-family: var(--font-display);
+        font-size: clamp(0.78rem, 2.6vw, 0.88rem);
+        margin-right: auto;
+        display: none;
+    }
+
+    @media (max-width: 560px) {
+        .defs-strip { grid-template-columns: 1fr; }
+        .cat-grid   { grid-template-columns: 1fr; }
+        .footer     { justify-content: center; }
+        #final-msg  { text-align: center; width: 100%; margin-right: 0; }
+    }
+
+    @media (min-width: 760px) {
+        .def-card .def-text { font-size: 13px; }
+        .card { padding: 30px 32px 26px; min-height: 140px; }
+        .cat-btn { padding: 20px 18px; }
+    }
 </style>
 </head>
 <body>
 
-<div class="act-header">
-  <p class="eyebrow">Examination Irregularities &amp; Incidents</p>
-  <h1>Irregularity or Incident?</h1>
-</div>
-<div class="progress-wrap">
-  <div class="progress-fill" id="progress-fill"></div>
-</div>
-<div class="score-strip">
-  <div class="score-pill"><span class="dot dot-correct"></span><span id="count-correct">0</span>&nbsp;correct</div>
-  <div class="score-pill"><span class="dot dot-wrong"></span><span id="count-wrong">0</span>&nbsp;wrong</div>
-  <div class="score-pill"><span class="dot dot-remain"></span><span id="count-remain">16</span>&nbsp;to go</div>
-</div>
-
-<div class="container">
-
-  <div class="defs-strip">
-    <div class="def-card def-irregularity">
-      <p class="def-label">Irregularity</p>
-      <p class="def-text">An act, error or omission that may undermine the integrity, credibility, security or fairness of the exam.</p>
+<div class="main-card">
+    <div class="header">
+        <p class="eyebrow">Examination Irregularities &amp; Incidents</p>
+        <h2>Irregularity or Incident?</h2>
     </div>
-    <div class="def-card def-incident">
-      <p class="def-label">Incident</p>
-      <p class="def-text">A temporary disturbance that is resolved on site, without harming the candidate or the exam's credibility.</p>
-    </div>
-  </div>
 
-  <!-- Game -->
-  <div class="game-area" id="game-area">
-    <div class="card-wrap">
-      <div class="card" id="card">
-        <p class="card-counter" id="card-counter">Item 1 of 16</p>
-        <p class="card-text"   id="card-text"></p>
-        <div class="card-feedback" id="card-feedback">
-          <span class="fb-pill"   id="fb-pill"></span>
-          <div  class="fb-reason" id="fb-reason"></div>
+    <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="score-strip">
+            <div class="score-pill"><span class="dot dot-correct"></span><span id="count-correct">0</span>&nbsp;correct</div>
+            <div class="score-pill"><span class="dot dot-wrong"></span><span id="count-wrong">0</span>&nbsp;wrong this round</div>
+            <div class="score-pill"><span class="dot dot-remain"></span><span id="count-remain">16</span>&nbsp;to go</div>
         </div>
-      </div>
     </div>
 
-    <p class="cat-label">Tap the correct category</p>
-    <div class="cat-grid" id="cat-grid">
-      <!-- Buttons injected by JS so order shuffles each card -->
-    </div>
-  </div>
+    <div class="game-body" id="game-area">
+        <p class="instructions"><strong>Instructions:</strong> Tap each example below to assign it to the correct category. Items you get wrong will come back around for another try.</p>
 
-  <!-- Results -->
-  <div class="results-screen" id="results-screen">
-    <div class="result-hero">
-      <div class="result-emoji" id="result-emoji"></div>
-      <div class="result-score" id="result-score"></div>
-      <div class="result-denom">out of 16</div>
-      <p class="result-msg" id="result-msg"></p>
-    </div>
-    <button class="btn-try-again" onclick="restart()">↩ Try Again</button>
-  </div>
+        <div class="defs-strip">
+            <div class="def-card def-irregularity">
+                <p class="def-label">Irregularity</p>
+                <p class="def-text">An act, error or omission that may undermine the integrity, credibility, security or fairness of the exam.</p>
+            </div>
+            <div class="def-card def-incident">
+                <p class="def-label">Incident</p>
+                <p class="def-text">A temporary disturbance that is resolved on site, without harming the candidate or the exam's credibility.</p>
+            </div>
+        </div>
 
+        <div id="retry-banner-slot"></div>
+
+        <div class="card-wrap">
+            <div class="card" id="card">
+                <p class="card-counter" id="card-counter">Item 1 of 16</p>
+                <p class="card-text"   id="card-text"></p>
+                <div class="card-feedback" id="card-feedback">
+                    <span class="fb-pill" id="fb-pill"></span>
+                    <div  class="fb-reason" id="fb-reason"></div>
+                </div>
+            </div>
+        </div>
+
+        <p class="cat-label">Tap the correct category</p>
+        <div class="cat-grid" id="cat-grid">
+            <!-- Buttons injected by JS so order shuffles each card -->
+        </div>
+    </div>
+
+    <div class="game-body" id="results-area" style="display:none;">
+        <div class="results-screen visible">
+            <div class="result-hero">
+                <div class="result-emoji" id="result-emoji"></div>
+                <div class="result-score" id="result-score"></div>
+                <div class="result-denom" id="result-denom">out of 16 correct</div>
+                <p class="result-msg" id="result-msg"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div id="final-msg">Well done. You have categorised all 16 examples correctly!</div>
+        <button id="redoBtn" class="btn btn-reset" style="display:none;" onclick="restart()">Redo</button>
+    </div>
 </div>
 
 <script>
-/* ── Data ─────────────────────────────────────────────────────────────── */
 const ITEMS = [
-  {
-    id:'i1', cat:'irregularity',
-    text:'Possession of an unauthorised electronic device (cellphone)',
-    reason:'An irregularity — the candidate brought in a prohibited item, which compromises the fairness of the exam.'
-  },
-  {
-    id:'i2', cat:'irregularity',
-    text:'Copying and/or assistance from an invigilator or fellow candidate',
-    reason:'An irregularity — dishonest assistance directly undermines the credibility of the exam.'
-  },
-  {
-    id:'i3', cat:'irregularity',
-    text:'Possession of unauthorised material (crib notes)',
-    reason:'An irregularity — crib notes are a deliberate attempt to cheat, threatening the exam\u2019s integrity.'
-  },
-  {
-    id:'i4', cat:'irregularity',
-    text:'Removal of the script from the examination venue',
-    reason:'An irregularity — taking a script out of the venue compromises its security.'
-  },
-  {
-    id:'i5', cat:'irregularity',
-    text:'Not batching scripts correctly or not submitting answer scripts within the required time to the WCED',
-    reason:'An irregularity — incorrect batching or late submission threatens the security of the exam process.'
-  },
-  {
-    id:'i6', cat:'irregularity',
-    text:'Candidate wrote the incorrect question paper, subject or level (e.g. Home Language instead of First Additional Language)',
-    reason:'An irregularity — this is an error that affects the validity of the candidate\u2019s result.'
-  },
-  {
-    id:'i7', cat:'irregularity',
-    text:'Tearing a page out of an answer book',
-    reason:'An irregularity — removing a page raises questions about the completeness and integrity of the script.'
-  },
-  {
-    id:'i8', cat:'incident',
-    text:'Late arrival within the first hour (e.g. 09:00\u201310:00 or 14:00\u201315:00)',
-    reason:'An incident — the candidate is admitted and the matter is resolved in the venue. This is explicitly listed as an incident type on the Incident Report Form (Annexure B).'
-  },
-  {
-    id:'i9', cat:'irregularity',
-    text:'Late arrival after the first hour (e.g. after 10:00 or 15:00)',
-    reason:'An irregularity — per the Examination Procedure Manual, a candidate arriving after the first hour must not be admitted, and the matter must be referred and formally recorded.'
-  },
-  {
-    id:'i10', cat:'irregularity',
-    text:'No admission letter or identification document',
-    reason:'An irregularity — without these documents, the candidate\u2019s identity and eligibility to write cannot be confirmed.'
-  },
-  {
-    id:'i11', cat:'irregularity',
-    text:'Name not on the mark sheet or Script Control Register',
-    reason:'An irregularity — a discrepancy in the official candidate records threatens the credibility of the process.'
-  },
-  {
-    id:'i12', cat:'incident',
-    text:'Candidate wrote at a different centre',
-    reason:'An incident — listed in the Examination Procedure Manual as a possible incident, resolved on site without compromising the exam\u2019s credibility.'
-  },
-  {
-    id:'i13', cat:'incident',
-    text:'Candidate wrote an incorrect subject',
-    reason:'An incident — listed in the Examination Procedure Manual as a possible incident, distinct from a deliberate unauthorised subject change, which is treated as an irregularity.'
-  },
-  {
-    id:'i14', cat:'incident',
-    text:'Power outage or load shedding',
-    reason:'An incident — caused by external infrastructure, resolved on site, and does not compromise the exam\u2019s credibility.'
-  },
-  {
-    id:'i15', cat:'incident',
-    text:'Technical problems with equipment',
-    reason:'An incident — an environmental disruption at the venue that is resolved without affecting the candidate negatively.'
-  },
-  {
-    id:'i16', cat:'irregularity',
-    text:'Candidate wrote their name on the cover of the answer script',
-    reason:'An irregularity — scripts must remain anonymous, so this breaches marking integrity procedures.'
-  },
+  { id:'i1', cat:'irregularity', text:'Possession of an unauthorised electronic device (cellphone)', reason:'An irregularity, the candidate brought in a prohibited item, which compromises the fairness of the exam.' },
+  { id:'i2', cat:'irregularity', text:'Copying and/or assistance from an invigilator or fellow candidate', reason:'An irregularity, dishonest assistance directly undermines the credibility of the exam.' },
+  { id:'i3', cat:'irregularity', text:'Possession of unauthorised material (crib notes)', reason:'An irregularity, crib notes are a deliberate attempt to cheat, threatening the exam\u2019s integrity.' },
+  { id:'i4', cat:'irregularity', text:'Removal of the script from the examination venue', reason:'An irregularity, taking a script out of the venue compromises its security.' },
+  { id:'i5', cat:'irregularity', text:'Not batching scripts correctly or not submitting answer scripts within the required time to the WCED', reason:'An irregularity, incorrect batching or late submission threatens the security of the exam process.' },
+  { id:'i6', cat:'irregularity', text:'Candidate wrote the incorrect question paper, subject or level (e.g. Home Language instead of First Additional Language)', reason:'An irregularity, this is an error that affects the validity of the candidate\u2019s result.' },
+  { id:'i7', cat:'irregularity', text:'Tearing a page out of an answer book', reason:'An irregularity, removing a page raises questions about the completeness and integrity of the script.' },
+  { id:'i8', cat:'incident', text:'Late arrival within the first hour (e.g. 09:00\u201310:00 or 14:00\u201315:00)', reason:'An incident, the candidate is admitted and the matter is resolved in the venue. This is explicitly listed as an incident type on the Incident Report Form (Annexure B).' },
+  { id:'i9', cat:'irregularity', text:'Late arrival after the first hour (e.g. after 10:00 or 15:00)', reason:'An irregularity, per the Examination Procedure Manual, a candidate arriving after the first hour must not be admitted, and the matter must be referred and formally recorded.' },
+  { id:'i10', cat:'irregularity', text:'No admission letter or identification document', reason:'An irregularity, without these documents, the candidate\u2019s identity and eligibility to write cannot be confirmed.' },
+  { id:'i11', cat:'irregularity', text:'Name not on the mark sheet or Script Control Register', reason:'An irregularity, a discrepancy in the official candidate records threatens the credibility of the process.' },
+  { id:'i12', cat:'incident', text:'Candidate wrote at a different centre', reason:'An incident, listed in the Examination Procedure Manual as a possible incident, resolved on site without compromising the exam\u2019s credibility.' },
+  { id:'i13', cat:'incident', text:'Candidate wrote an incorrect subject', reason:'An incident, listed in the Examination Procedure Manual as a possible incident, distinct from a deliberate unauthorised subject change, which is treated as an irregularity.' },
+  { id:'i14', cat:'incident', text:'Power outage or load shedding', reason:'An incident, caused by external infrastructure, resolved on site, and does not compromise the exam\u2019s credibility.' },
+  { id:'i15', cat:'incident', text:'Technical problems with equipment', reason:'An incident, an environmental disruption at the venue that is resolved without affecting the candidate negatively.' },
+  { id:'i16', cat:'irregularity', text:'Candidate wrote their name on the cover of the answer script', reason:'An irregularity, scripts must remain anonymous, so this breaches marking integrity procedures.' },
 ];
 
 const CATS = [
-  { id:'irregularity', label:'Possible Irregularity', icon:'🚫' },
-  { id:'incident',      label:'Possible Incident',     icon:'⚠️' },
+  { id:'irregularity', label:'Possible Irregularity', icon:'\u{1F6AB}' },
+  { id:'incident',      label:'Possible Incident',     icon:'\u26A0\uFE0F' },
 ];
 
 const CAT_NAMES = Object.fromEntries(CATS.map(c => [c.id, c.label]));
 
-let roundQueue = [];   // items still to answer in this round
-let missed     = [];   // items answered wrong this round, to retry next round
-let mastered   = 0;    // total items answered correctly across all rounds
+let roundQueue = [];
+let missed     = [];
+let mastered   = 0;
 let roundNum   = 1;
 let current    = 0;
 let answered   = false;
 
-/* ── Utilities ─────────────────────────────────────────────────────────── */
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
 
-/* ── Render buttons in a fresh shuffled order ────────────────────────── */
 function renderButtons() {
   const grid = document.getElementById('cat-grid');
   grid.innerHTML = '';
@@ -499,23 +478,24 @@ function renderButtons() {
   });
 }
 
-/* ── Init (brand new attempt, all items) ────────────────────────────── */
 function init() {
   roundQueue = shuffle(ITEMS);
   missed = []; mastered = 0; roundNum = 1; current = 0; answered = false;
   document.getElementById('count-correct').textContent = 0;
   document.getElementById('count-wrong').textContent   = 0;
   document.getElementById('count-remain').textContent  = roundQueue.length;
+  document.getElementById('game-area').classList.remove('hidden');
+  document.getElementById('results-area').style.display = 'none';
+  document.getElementById('redoBtn').style.display = 'none';
+  document.getElementById('final-msg').style.display = 'none';
   showCard();
 }
 
-/* ── Show card ───────────────────────────────────────────────────────── */
 function showCard() {
   answered = false;
 
   const item = roundQueue[current];
-  const roundLabel = roundNum === 1 ? '' : ` · Retry round ${roundNum}`;
-  document.getElementById('card-counter').textContent = `Item ${current + 1} of ${roundQueue.length}${roundLabel}`;
+  document.getElementById('card-counter').textContent = `Item ${current + 1} of ${roundQueue.length}`;
   document.getElementById('card-text').textContent    = item.text;
 
   const fb     = document.getElementById('card-feedback');
@@ -540,7 +520,6 @@ function showCard() {
   updateProgress();
 }
 
-/* ── Answer ──────────────────────────────────────────────────────────── */
 function answer(chosen) {
   if (answered) return;
   answered = true;
@@ -560,11 +539,11 @@ function answer(chosen) {
   const reason = document.getElementById('fb-reason');
 
   if (isCorrect) {
-    pill.textContent = '✓ Correct!';
+    pill.textContent = 'Correct!';
     pill.className   = 'fb-pill correct';
     mastered++;
   } else {
-    pill.textContent = `✗ That's actually a: ${CAT_NAMES[item.cat]}`;
+    pill.textContent = `That's actually a: ${CAT_NAMES[item.cat]}`;
     pill.className   = 'fb-pill wrong';
     reason.textContent = item.reason;
     reason.classList.add('visible');
@@ -592,7 +571,6 @@ function answer(chosen) {
   }, pause);
 }
 
-/* ── Start a retry round with only the missed items ────────────────── */
 function startRetryRound() {
   roundQueue = shuffle(missed);
   missed = [];
@@ -603,17 +581,16 @@ function startRetryRound() {
   showCard();
 }
 
-/* ── Brief banner announcing the retry round ─────────────────────────── */
 function showRetryBanner() {
-  const card = document.getElementById('card');
+  const slot = document.getElementById('retry-banner-slot');
+  slot.innerHTML = '';
   const banner = document.createElement('div');
+  banner.className = 'retry-banner';
   banner.textContent = `Round ${roundNum}: retrying the ${roundQueue.length} item${roundQueue.length === 1 ? '' : 's'} you missed`;
-  banner.style.cssText = 'font-family:var(--font-display);font-size:11px;font-weight:700;color:var(--blue);text-align:center;margin-bottom:8px;letter-spacing:0.5px;';
-  card.parentElement.insertBefore(banner, card);
+  slot.appendChild(banner);
   setTimeout(() => banner.remove(), 2400);
 }
 
-/* ── Strip & progress ───────────────────────────────────────────────── */
 function updateStrip() {
   document.getElementById('count-correct').textContent = mastered;
   document.getElementById('count-wrong').textContent   = missed.length;
@@ -624,46 +601,40 @@ function updateProgress() {
   document.getElementById('progress-fill').style.width = totalForRound ? ((current / totalForRound) * 100) + '%' : '0%';
 }
 
-/* ── Button helpers ─────────────────────────────────────────────────── */
 function disableBtns() { document.querySelectorAll('.cat-btn').forEach(b => b.classList.add('disabled')); }
 
-/* ── Results ─────────────────────────────────────────────────────────── */
 function showResults() {
   document.getElementById('progress-fill').style.width = '100%';
   document.getElementById('game-area').classList.add('hidden');
+  document.getElementById('results-area').style.display = 'block';
+  document.getElementById('redoBtn').style.display = 'inline-block';
+  document.getElementById('final-msg').style.display = 'block';
 
   const totalItems = ITEMS.length;
   let emoji, msg;
   if (roundNum === 1) {
-    emoji = '🏆';
-    msg   = 'Outstanding! You correctly identified every irregularity and incident on your first attempt — you\u2019re well prepared to handle these situations.';
+    emoji = '\u{1F3C6}';
+    msg   = 'Outstanding! You correctly identified every irregularity and incident on your first attempt, you\u2019re well prepared to handle these situations.';
   } else if (roundNum <= 3) {
-    emoji = '👍';
-    msg   = `Well done — you got there in ${roundNum} rounds. Review any items where the reason appeared, then you\u2019re ready to move on.`;
+    emoji = '\u{1F44D}';
+    msg   = `Well done, you got there in ${roundNum} rounds. Review any items where the reason appeared, then you\u2019re ready to move on.`;
   } else {
-    emoji = '📚';
+    emoji = '\u{1F4DA}';
     msg   = `You got there in ${roundNum} rounds. Re-read the two definitions above before moving on, the distinction will get easier with practice.`;
   }
 
   document.getElementById('result-emoji').textContent = emoji;
   document.getElementById('result-score').textContent = totalItems;
-  document.getElementById('result-denom') && (document.getElementById('result-denom').textContent = `out of ${totalItems} correct`);
+  document.getElementById('result-denom').textContent = `out of ${totalItems} correct`;
   document.getElementById('result-msg').textContent   = msg;
-  document.getElementById('results-screen').classList.add('visible');
 }
 
-/* ── Restart ─────────────────────────────────────────────────────────── */
 function restart() {
-  document.getElementById('results-screen').classList.remove('visible');
-  document.getElementById('game-area').classList.remove('hidden');
   init();
 }
 
 init();
 
-/* ── Report actual content height to a hosting iframe (e.g. Moodle) ──── */
-/* If the page is embedded in an iframe with a fixed height, this lets   */
-/* a listening parent resize the frame to fit, removing the gap below.  */
 function reportHeight() {
   const h = document.documentElement.scrollHeight;
   if (window.parent && window.parent !== window) {
