@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accommodations Requiring Additional Staff or Equipment</title>
+<style>
+    :root {
+        --primary: #001489;
+        --lime:    #C4D600;
+        --blue:    #007DBA;
+        --red:     #D73828;
+        --yellow:  #FFC600;
+        --white:   #ffffff;
+        --bg:      #f0f3f9;
+        --font-body:    'Century Gothic', 'CenturyGothic', sans-serif;
+        --font-display: 'Gotham', 'Century Gothic', 'CenturyGothic', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+        font-family: var(--font-body);
+        background: var(--bg);
+        margin: 0;
+        padding: 12px;
+        color: var(--primary);
+        display: flex;
+        justify-content: center;
+    }
+
+    .main-card {
+        width: 100%;
+        max-width: 960px;
+        background: var(--white);
+        border-radius: 14px;
+        box-shadow: 0 8px 32px rgba(0,20,137,0.13);
+        overflow: hidden;
+        border: 1px solid #dde3f5;
+    }
+
+    .header {
+        background: var(--primary);
+        color: var(--white);
+        padding: 22px 20px 18px;
+        text-align: center;
+        border-bottom: 5px solid var(--lime);
+    }
+    .eyebrow {
+        font-family: var(--font-display);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--yellow);
+        margin-bottom: 6px;
+    }
+    .header h2 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-style: italic;
+        font-size: clamp(1rem, 4vw, 1.35rem);
+    }
+
+    .game-body { padding: 22px 18px 18px; }
+
+    .instructions {
+        font-size: clamp(0.78rem, 2.8vw, 0.88rem);
+        color: var(--primary);
+        margin: 0 0 18px;
+        line-height: 1.5;
+        text-align: center;
+    }
+
+    /* Hotspot grid */
+    .hotspot-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-bottom: 6px;
+    }
+    @media (max-width: 720px) {
+        .hotspot-grid { grid-template-columns: 1fr; }
+    }
+
+    .hotspot {
+        border: none;
+        border-radius: 12px;
+        padding: 0;
+        cursor: pointer;
+        text-align: left;
+        overflow: hidden;
+        box-shadow: 0 4px 14px rgba(0,20,137,0.12);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        background: var(--white);
+        border: 2px solid transparent;
+        position: relative;
+    }
+    .hotspot:hover  { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,20,137,0.18); }
+    .hotspot:active { transform: translateY(0); }
+    .hotspot.open   { border-color: var(--lime); }
+
+    .hotspot-top {
+        padding: 18px 16px 14px;
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .hotspot[data-topic="computers"] .hotspot-top { background: var(--blue); }
+    .hotspot[data-topic="venues"]    .hotspot-top { background: var(--primary); }
+    .hotspot[data-topic="scribes"]   .hotspot-top { background: var(--red); }
+
+    .hotspot-icon {
+        font-size: 22px;
+        flex-shrink: 0;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .hotspot-title {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: clamp(0.82rem, 2.6vw, 0.95rem);
+        line-height: 1.25;
+    }
+
+    .hotspot-bottom {
+        padding: 12px 16px 14px;
+        font-size: 11.5px;
+        font-weight: 700;
+        font-family: var(--font-display);
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        color: var(--primary);
+        opacity: 0.55;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .hotspot-bottom .plus {
+        font-size: 16px;
+        line-height: 1;
+        transition: transform 0.25s ease;
+    }
+    .hotspot.open .hotspot-bottom .plus { transform: rotate(45deg); }
+    .hotspot.open .hotspot-bottom .label-text::after { content: 'Hide details'; }
+    .hotspot:not(.open) .hotspot-bottom .label-text::after { content: 'Tap to reveal'; }
+
+    /* Detail panel */
+    .detail-panel {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.4s ease, margin-top 0.4s ease;
+        background: var(--bg);
+        border-radius: 10px;
+        margin-top: 0;
+    }
+    .detail-panel.visible {
+        max-height: 900px;
+        margin-top: 14px;
+        padding: 16px 18px;
+    }
+
+    .detail-panel h4 {
+        font-family: var(--font-display);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--primary);
+        margin: 0 0 8px;
+        border-left: 4px solid var(--lime);
+        padding-left: 10px;
+    }
+    .detail-panel h4.role-2 { border-left-color: var(--blue); margin-top: 14px; }
+
+    .detail-panel ul {
+        margin: 0;
+        padding-left: 20px;
+        color: var(--primary);
+    }
+    .detail-panel li {
+        font-size: clamp(0.78rem, 2.6vw, 0.85rem);
+        line-height: 1.55;
+        margin-bottom: 6px;
+    }
+    .detail-panel li:last-child { margin-bottom: 0; }
+
+    .footer {
+        padding: 14px 18px;
+        border-top: 1px solid #e4e8f5;
+        background: #fafbff;
+        text-align: center;
+        font-family: var(--font-display);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+        color: var(--primary);
+        opacity: 0.6;
+    }
+</style>
+</head>
+<body>
+
+<div class="main-card">
+    <div class="header">
+        <p class="eyebrow">Accommodations &amp; Concessions</p>
+        <h2>Where Additional Staff or Equipment Is Required</h2>
+    </div>
+
+    <div class="game-body">
+        <p class="instructions"><strong>Instructions:</strong> Tap each card below to reveal the procedures that apply.</p>
+
+        <div class="hotspot-grid" id="hotspot-grid">
+
+            <button class="hotspot" data-topic="computers" id="hs-computers">
+                <div class="hotspot-top">
+                    <span class="hotspot-icon">💻</span>
+                    <span class="hotspot-title">Where Computers Are Used</span>
+                </div>
+                <div class="hotspot-bottom"><span class="plus">+</span><span class="label-text"></span></div>
+            </button>
+
+            <button class="hotspot" data-topic="venues" id="hs-venues">
+                <div class="hotspot-top">
+                    <span class="hotspot-icon">🚪</span>
+                    <span class="hotspot-title">Where Separate Venues Are Used</span>
+                </div>
+                <div class="hotspot-bottom"><span class="plus">+</span><span class="label-text"></span></div>
+            </button>
+
+            <button class="hotspot" data-topic="scribes" id="hs-scribes">
+                <div class="hotspot-top">
+                    <span class="hotspot-icon">✍️</span>
+                    <span class="hotspot-title">Where Scribes &amp; Readers Are Used</span>
+                </div>
+                <div class="hotspot-bottom"><span class="plus">+</span><span class="label-text"></span></div>
+            </button>
+
+        </div>
+
+        <div class="detail-panel" id="panel-computers">
+            <h4>Computers Must Be Prepared By Ensuring</h4>
+            <ul>
+                <li>Spell checkers and other supporting programs are disabled.</li>
+                <li>There is no access to the internet.</li>
+                <li>There is no access to other programs on the computer.</li>
+                <li>Computers must be stand-alone, not networked.</li>
+                <li>Candidate profiles must be created on the computer.</li>
+                <li>After the examination, the candidate's answers must be printed and stapled into the answer book.</li>
+                <li>Devices must be fully charged, and additional equipment must be available in the event of a malfunction.</li>
+            </ul>
+        </div>
+
+        <div class="detail-panel" id="panel-venues">
+            <h4>Separate Venue Requirements</h4>
+            <ul>
+                <li>The candidate and scribe must be accompanied by an invigilator. A recording must be made of the session.</li>
+                <li>The recording must be retained by the school in the safe or strong room.</li>
+                <li>Schools must ensure that scripts of learners in separate venues are batched together with the rest of the scripts.</li>
+                <li>In the event of an irregularity, investigators may request this recording.</li>
+            </ul>
+        </div>
+
+        <div class="detail-panel" id="panel-scribes">
+            <h4>Invigilator</h4>
+            <ul>
+                <li>Ensure the question is read verbatim, clearly and audibly to the candidate, and that the candidate's answers are recorded verbatim.</li>
+                <li>Ensure the candidate is not provided with answers and that no question is explained.</li>
+                <li>The invigilator may not interact with the candidate.</li>
+            </ul>
+            <h4 class="role-2">Scribe / Reader</h4>
+            <ul>
+                <li>Must be trained by the district and have a certificate in their possession during examinations.</li>
+                <li>School principals or centre managers must meet all scribes before the examination to verify district training.</li>
+                <li>The scribe reads questions to the candidate and writes down spoken answers verbatim.</li>
+                <li>In the case of Deaf candidates, the scribe writes down answers given in Sign Language.</li>
+                <li>The scribe must remain neutral, impartial, and must not become impatient or hurried.</li>
+                <li>The scribe or reader must not serve as an invigilator at the same time, an invigilator must be separately present.</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="footer">Tap a card to expand it</div>
+</div>
+
+<script>
+document.querySelectorAll('.hotspot').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const topic = btn.dataset.topic;
+        const panel = document.getElementById('panel-' + topic);
+        const isOpen = btn.classList.contains('open');
+
+        document.querySelectorAll('.hotspot').forEach(b => b.classList.remove('open'));
+        document.querySelectorAll('.detail-panel').forEach(p => p.classList.remove('visible'));
+
+        if (!isOpen) {
+            btn.classList.add('open');
+            panel.classList.add('visible');
+            requestAnimationFrame(() => {
+                panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+        }
+    });
+});
+
+function reportHeight() {
+    const h = document.documentElement.scrollHeight;
+    if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'resize-iframe', height: h }, '*');
+    }
+}
+window.addEventListener('load', reportHeight);
+new ResizeObserver(reportHeight).observe(document.body);
+</script>
+</body>
+</html>
