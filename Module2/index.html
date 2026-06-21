@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pre-Examination Procedure · Drag &amp; Drop</title>
+    <title>Pre-Examination Procedure · Drag andamp; Drop</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -301,13 +301,13 @@
 <div class="page-wrapper">
 
     <p class="module-tag">Pre-Examination Procedure · Activity</p>
-    <h1>Drag &amp; Drop: Sort the Preparation Steps</h1>
+    <h1>Drag andamp; Drop: Sort the Pre-Examination Steps</h1>
     <p class="page-subtitle">Invigilator Training — Chronological Sequencing</p>
 
     <div class="instruction-bar">
         <div class="instr-icon">🗂️</div>
         <div class="instr-body">
-            <div class="instr-title">Drag &amp; Drop: Place each step in the correct position</div>
+            <div class="instr-title">Drag andamp; Drop: Place each step in the correct position</div>
             <p><strong>Drag each step</strong> into the correct numbered slot below (1 = first, 8 = last). Fill all 8 slots, then press <strong>Check my answers</strong>. Click ✕ on any filled slot to return a step to the bank. <strong>Click any step</strong> for more information.</p>
         </div>
     </div>
@@ -366,12 +366,12 @@
 const stepsData = [
     { id:'s1', emoji:'🏫', timing:'2 days before',  label:'Prepare the Venue',          title:'Prepare the Examination Venue',                   desc:'Ensure the venue is clean, well-lit, well-ventilated, and free from disruptions. Arrange desks at least 1 metre apart. Remove all learning materials, posters and subject-related content from walls and boards. Switch off any intercom or public address system.', key:'Clean venue · desks 1m apart · remove learning material · disable PA' },
     { id:'s2', emoji:'🪑', timing:'Before the exam', label:'Seating Plan',               title:'Prepare and Display the Seating Plan',             desc:'Prepare a unique seating plan for each session using the snaking method. Paste examination numbers — not names — on each desk. Display the seating plan both inside and outside the examination room so candidates can find their seats.', key:'Snaking method · exam numbers on desks · display inside & outside' },
-    { id:'s3', emoji:'🔑', timing:'1 hour before',   label:'Session Bag & Briefing',     title:'Retrieve Session Bag and Brief Invigilators',      desc:'Retrieve the sealed session bag following the SmartLock key procedure. Verify the correct subject and session. Confirm all documents and materials are ready. Ensure sufficient invigilators are present at a ratio of 1:30 and brief them on their roles and responsibilities.', key:'SmartLock · verify subject/session · ratio 1:30 · briefing' },
-    { id:'s4', emoji:'🚪', timing:'35 min before',   label:'Admit & Search',             title:'Admit Candidates and Search for Prohibited Items', desc:'Allow candidates to enter 35 minutes before the examination starts. Station an invigilator at the entrance to check IDs and admission letters. Ensure all candidates perform a self-search. Remove all unauthorised materials including phones, smart watches, notes, textbooks and Bluetooth devices. Bags must not enter the venue.', key:'Check IDs & admission · self-search · no phones/watches/notes · no bags' },
+    { id:'s3', emoji:'🔑', timing:'1 hour before',   label:'Session Bag and Briefing',     title:'Retrieve Session Bag and Brief Invigilators',      desc:'Retrieve the sealed session bag following the SmartLock key procedure. Verify the correct subject and session. Confirm all documents and materials are ready. Ensure sufficient invigilators are present at a ratio of 1:30 and brief them on their roles and responsibilities.', key:'SmartLock · verify subject/session · ratio 1:30 · briefing' },
+    { id:'s4', emoji:'🚪', timing:'35 min before',   label:'Admit and Search',             title:'Admit Candidates and Search for Prohibited Items', desc:'Allow candidates to enter 35 minutes before the examination starts. Station an invigilator at the entrance to check IDs and admission letters. Ensure all candidates perform a self-search. Remove all unauthorised materials including phones, smart watches, notes, textbooks and Bluetooth devices. Bags must not enter the venue.', key:'Check IDs & admission · self-search · no phones/watches/notes · no bags' },
     { id:'s5', emoji:'📝', timing:'25 min before',   label:'Issue Answer Books',         title:'Issue Answer Books and Complete Cover Pages',      desc:'Issue answer books individually 25 minutes before the start. Record the number of answer books issued. Verify that all candidates complete the 5-point check: barcoded sticker, examination number, date, subject code and subject name. Confirm cover pages are fully and correctly completed.', key:'5-point cover check: sticker · exam no. · date · subject code · name' },
     { id:'s6', emoji:'📦', timing:'Before writing',  label:'Distribute Question Papers', title:'Verify, Open and Distribute Question Papers',      desc:'Have two candidates verify the sealed inner bags. Open the question paper bags in front of the candidates and the principal or centre manager. Hand each candidate the correct question paper individually, placed face down. Page through all papers to check for missing pages, unclear printing or repeated sections. Read and record any errata on the board and add extra time to compensate.', key:'Candidates verify bags · open in front of principal · face down · note errata' },
     { id:'s7', emoji:'📢', timing:'10 min before',   label:'Read Rules Aloud',           title:'Read the Examination Rules Aloud',                 desc:'Begin reading time 10 minutes before writing starts. During reading time, candidates may read the question paper only — no writing is permitted. The invigilator must read the examination rules aloud to all candidates. Do not read the instructions printed on the question paper itself.', key:'Reading time only (no writing) · rules read aloud · skip QP instructions' },
-    { id:'s8', emoji:'✍️', timing:'Writing begins',  label:'Begin Writing',              title:'Instruct Candidates to Begin Writing',             desc:'At the official start time, instruct candidates to turn over their question papers and begin writing. Confirm the start time is recorded. The examination session is now officially underway and continuous invigilation must begin.', key:'Official start · turn over papers · writing commences · record start time' }
+    { id:'s8', emoji:'✍️', timing:'Writing begins',  label:'Candidates Start Writing',              title:'Instruct Candidates to Begin Writing',             desc:'At the official start time, instruct candidates to turn over their question papers and begin writing. Confirm the start time is recorded. The examination session is now officially underway and continuous invigilation must begin.', key:'Official start · turn over papers · writing commences · record start time' }
 ];
 
 const TOTAL = stepsData.length;
